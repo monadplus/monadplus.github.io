@@ -12,17 +12,7 @@ tags:
  - synonym families
 ---
 
-# Indexed Type families
-
 "Indexed" because the set of types are called _indices_.
-
-- [Data Families](#data-families)
-- [Synonym Families](#synonym-families)
-	- [Open Type Synonym Families](#open-type-synonym-families)
-	- [Closed Type Synonym Families](#closed-type-synonym-families)
-	- [Associated Data and Type Families](#associated-data-and-type-families)
-- [Example of Associated Data Families](#example-of-associated-data-families)
-- [Example of Associated Type Families](#example-of-associated-type-families)
 
 # Data Families
 
