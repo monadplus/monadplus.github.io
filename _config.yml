@@ -76,6 +76,12 @@ plugins:
  - jekyll-sitemap
  - jekyll-feed
 
+# Right corner banner
+github_banner:
+  enable: true
+  permalink: https://github.com/monadplus
+  title: Follow me on GitHub
+
 # ---------------------------------------------------------------
 # Site Information Settings
 # ---------------------------------------------------------------
@@ -84,7 +90,7 @@ plugins:
 favicon: /assets/favicon.ico
 
 # Set default keywords (Use a comma to separate)
-keywords: "haskell, functional programming, blog"
+keywords: "haskell, nix, functional programming, blog"
 
 # Set rss to false to disable feed link.
 # Leave rss as empty to use site's feed link.
@@ -230,7 +236,6 @@ social:
 # Social Links Icons (https://fontawesome.com/)
 social_icons:
   enable: true
-
   github: github
   twitter: twitter
   mail: envelope
