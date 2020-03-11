@@ -3,13 +3,9 @@ title: Tail Recursion
 description: What is tail recursion ? Do I need to worry about it in Haskell ? How can I prevent a stack overflow ?
 categories:
  - haskell
- - nix
- - tooling
 tags:
  - haskell
- - ghc
- - nix
- - tooling
+ - tail recursion
 ---
 
 # Recursion, Tail Recursion and TCO
@@ -36,14 +32,14 @@ foldr f z (x:xs) = f x (foldr f z xs)
 
 IMO, `foldr` is not a good example of guarded recursive:
 
-```
+```haskell
 >>> foldr (+) 0 [1..100000000]
 *** Exception: stack overflow
 ```
 
 Let's use a better example:
 
-```
+```haskell
 repeat :: a -> [a]
 repeat x = let xs = x : xs in xs
 ```

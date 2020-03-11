@@ -3,13 +3,9 @@ title: Indexed Type Families
 description: What are type families ? What are they used for ? In this blog, we are going to answer these questions with practical examples.
 categories:
  - haskell
- - type level
 tags:
  - haskell
  - type level
- - type families
- - data families
- - synonym families
 ---
 
 "Indexed" because the set of types are called _indices_.

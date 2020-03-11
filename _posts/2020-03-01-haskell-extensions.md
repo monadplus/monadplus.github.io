@@ -3,13 +3,9 @@ title: Cheatsheet - Haskell Extensions
 description: This is a compilation of my notes about GHC language extensions...
 categories:
  - haskell
- - nix
- - tooling
 tags:
  - haskell
  - ghc
- - nix
- - tooling
 ---
 
 This blog is not a replacement of the [official documentation](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#language-options) about language extensions.

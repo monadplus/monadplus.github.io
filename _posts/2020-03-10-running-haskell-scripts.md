@@ -4,7 +4,6 @@ description: In this post, we are going to explore the different approaches to r
 categories:
  - haskell
  - nix
- - tooling
 tags:
  - haskell
  - ghc
