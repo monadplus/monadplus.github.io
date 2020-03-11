@@ -99,3 +99,22 @@ So now, you can run your haskell script in an environment without ghc:
 ./generate-random-samples.hs
 [6052359640365008112,3693984866634705670,6521947999724514858,640433474764908030,-4262896110044960033,-1795671341099353119,-2220462704949887998,-248182841640258167,709016591698961687,-3622504171575206589,5987258113070378446,-159251391303273987,-8449937247808153766,6165509553180365166,-8199532339362621783,-9187765480154042269,-2389922548196927048,-4842141643835297495,-1106748185069026877,826927505518387091]
 ```
+
+# Update: 11-03-2020
+
+After reading the following [comment in reddit](https://www.reddit.com/r/haskell/comments/fgdngc/running_a_haskell_script_without_ghc_using_nix/fk56fut/), I think it is worth mentioning that you can achieve _better modularity_ in exchange of _maintainability_, by having everything on the haskell script, without having to depend on a `shell.nix` file:
+
+```haskell
+#!/usr/bin/env nix-shell
+#!nix-shell  -i runghc -p "haskellPackages.ghcWithPackages (pkgs: with pkgs; [ mwc-random ])"
+{-# LANGUAGE ScopedTypeVariables #-}
+
+import System.Random.MWC
+import Data.Vector.Unboxed
+import Control.Monad.ST
+
+main = do
+  vs <- withSystemRandom $
+        \(gen::GenST s) -> uniformVector gen 20 :: ST s (Vector Int)
+  print vs
+```
