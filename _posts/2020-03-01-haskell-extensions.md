@@ -294,6 +294,28 @@ data Complex a = MkComplex (F a)    -- a has role nominal
 data Phant a = MkPhant Bool         -- a has role phantom
 ```
 
+The type system ensures terms are usd correctly, the kind system ensures types are logical, the role system ensures coercions are safe.
+
+Let's see an example:
+
+```haskell
+newtype Reverse =
+  Reverse { _reversed :: String }
+
+instance Ord Reverse where compare = ... -- compare from right to left
+```
+
+It is not safe to coerce from `Map Reverse v` to `Map String v` ?
+
+Nope! But nothing prevents us from this ... except for the role system!
+
+```haskell
+type role Map nominal representational
+```
+
+k1 ~ k2 does not imply Map k1 v ~ Map k2 v
+
+
 # OverlappingInstances
 
 - {-# OVERLAPPING #-}: between this and another, choose this.
