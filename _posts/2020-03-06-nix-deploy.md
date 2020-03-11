@@ -12,8 +12,8 @@ tags:
  - nixops
 ---
 
-Today, I would like to talk about [`nix-deploy`](http://ixmatus.net/articles/deploy-software-nix-deploy.html).
-But, before I'd like to introduce [`nix-delegate`](https://github.com/awakesecurity/nix-delegate) to have a better understanding of `nix-deploy`.
+Today, I would like to talk about [nix-deploy](http://ixmatus.net/articles/deploy-software-nix-deploy.html).
+But, before I'd like to introduce [nix-delegate](https://github.com/awakesecurity/nix-delegate) to have a better understanding of `nix-deploy`.
 
 `nix-deploy` is a safe replacement for `nix-copy-closure` and `nixops`.
 
@@ -88,7 +88,7 @@ $ ssh parnell@remote-host /nix/store/1y6ckg6khrdsvll54s5spcmf3w6ka9k4-hello-2.10
 2. build the system configuration and software defined in the deployment specification.
 3. deploy the system and activate it.
 
-A _system configuration_ is a bootable NixOS system configuration (example on [Appendix B](#appendix-b).
+A _system configuration_ is a bootable NixOS system configuration (example on [Appendix B](#appendix-b)).
 
 `nix-deploy system` simply copies the closure to the target computer, and then executes the `switch-to-configuration` script (same mechanism used by `nixos-rebuild switch`) found within the build product of the system configuration it deployed.
 
@@ -113,11 +113,11 @@ This blog was heavily inspired by _"[Deploy software easily and securely using n
 
 # References
 
-- nix-delegate, https://github.com/awakesecurity/nix-delegate
-- nix-deploy, https://github.com/awakesecurity/nix-deploy
-- nix-copy-closure, https://nixos.org/nix/manual/#name-6
-- nixops, https://nixos.org/nixops/
-- Deploy software easily and securely using nix-deploy, http://ixmatus.net/articles/deploy-software-nix-deploy.html
+- nix-delegate, <https://github.com/awakesecurity/nix-delegate>
+- nix-deploy, <https://github.com/awakesecurity/nix-deploy>
+- nix-copy-closure, <https://nixos.org/nix/manual/#name-6>
+- nixops, <https://nixos.org/nixops/>
+- Deploy software easily and securely using nix-deploy, <http://ixmatus.net/articles/deploy-software-nix-deploy.html>
 
 # Appendix A
 
