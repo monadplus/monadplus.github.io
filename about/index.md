@@ -3,9 +3,9 @@ layout: page
 type: about
 ---
 
-Haskell enthusiast.
+> Currently studying a master's degree in Advanced Computing at UPC (Barcelona, Spain).
 
-> Currently studying a master's degree in Advanced Computing in the UPC (Barcelona).
+Haskell enthusiast.
 
 Some of my contributions to the open source community:
 
