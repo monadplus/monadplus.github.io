@@ -315,10 +315,44 @@ type role Map nominal representational
 
 k1 ~ k2 does not imply Map k1 v ~ Map k2 v
 
+# ViewPatterns
+
+`ViewPatterns` allow us to pattern match on the result of function applications.
+
+Suppose you are using [Data.Sequence](https://hackage.haskell.org/package/containers-0.6.2.1/docs/Data-Sequence.html) instead a list.
+
+The `Data.Seq` is implemented using the `Finger Tree` data structure which has a nice asymptotic cost for some operations like `last`, `append` from the right, `concat`, etc.
+
+The only issue is that `Data.Seq` is not as ergonomic as a list because it is using a complex data structure underneath.
+
+So the following is not possible using a seq.
+
+```haskell
+last :: Seq a -> Maybe a
+last ?? = Nothing
+last ?? = Just _
+```
+
+While we can’t pattern match directly on a Seq, we can view it as a list from the right by using viewr:
+
+```haskell
+data ViewR a = EmptyR | (Seq a) :> a
+viewr :: Seq a -> ViewR a
+```
+
+Taking advantage of the extension `ViewPatterns`, we can pattern-match on the application of `viewr` and `viewl` and it behave like we were patter-matching on a list:
+
+```
+last :: Seq a -> Maybe a
+last (viewr -> xs :> x) = Just x
+last (viewr -> EmptyR) = Nothing
+```
 
 # OverlappingInstances
 
-- {-# OVERLAPPING #-}: between this and another, choose this.
-- {-# OVERLAPPABLE #-}: between this and another, choose the other.
-- {-# OVERLAPS #-}: only this is picked if it is more specific (if x is a valid substitution of y, but y isn't a valid substitution for x, then @x@ is more "specific")
-- {-# INCOHERENT #-}
+```
+{-# OVERLAPPING #-}: between this and another, choose this.
+{-# OVERLAPPABLE #-}: between this and another, choose the other.
+{-# OVERLAPS #-}: only this is picked if it is more specific (if x is a valid substitution of y, but y isn't a valid substitution for x, then @x@ is more "specific")
+{-# INCOHERENT #-}
+```
