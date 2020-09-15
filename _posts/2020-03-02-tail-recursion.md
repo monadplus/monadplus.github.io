@@ -46,8 +46,6 @@ repeat x = let xs = x : xs in xs
 
 Since the (:) constructor is __non-strict in its second argument__ this works and the list can be traversed, because you have a __finite weak-head normal form__ (WHNF). As long as the consumer (for example a list fold) only ever asks for the WHNF this works and runs in constant space.
 
-# In Haskell
-
 In Haskell, the function call model is a little different, function calls might __not__ use a _new stack frame_, so making a function tail-recursive typically isn't as big a deal—being productive, via guarded recursion, is more usually a concern.
 
 # Sources
