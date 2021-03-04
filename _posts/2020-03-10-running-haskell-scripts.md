@@ -106,6 +106,7 @@ After reading the following [comment in reddit](https://www.reddit.com/r/haskell
 ```haskell
 #!/usr/bin/env nix-shell
 #!nix-shell -i runghc -p "haskellPackages.ghcWithPackages (pkgs: with pkgs; [ mwc-random ])"
+#!nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/d373d80b1207d52621961b16aa4a3438e4f98167.tar.gz
 {-# LANGUAGE ScopedTypeVariables #-}
 
 import System.Random.MWC
