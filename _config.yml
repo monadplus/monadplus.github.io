@@ -229,8 +229,7 @@ social:
   github: https://github.com/monadplus
   twitter: https://twitter.com/monadplus
   mail: mailto:arnauabella@gmail.com
-  gist: https://gist.github.com/monadplus/
-  cv: /assets/documents/cv2019.pdf
+  cv: /assets/documents/cv.pdf
 
 
 # Social Links Icons (https://fontawesome.com/)
@@ -239,7 +238,6 @@ social_icons:
   github: github
   twitter: twitter
   mail: envelope
-  gist: github-alt
   cv: book
 
 
