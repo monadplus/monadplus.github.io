@@ -388,13 +388,15 @@ han: false
 #duoshuo_shortname:
 
 # Disqus
+# You must register a shortname https://disqus.com/profile/signup/intent/
 disqus:
   enable: true
-  shortname: monadplus.pro
+  shortname: monadplus
   count: true
   # hide comments (visitors need to click to load the comments)
   # count need to be false when hide is true
   hide: false
+disqus_shortname: monadplus
 
 # <wildfire>
 wildfire:
