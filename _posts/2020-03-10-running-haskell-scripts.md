@@ -6,9 +6,7 @@ categories:
  - nix
 tags:
  - haskell
- - ghc
  - nix
- - tooling
 ---
 
 # Introduction

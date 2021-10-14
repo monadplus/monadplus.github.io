@@ -3,19 +3,24 @@ layout: page
 type: about
 ---
 
-> Currently studying a master's degree in Advanced Computing at UPC (Barcelona, Spain).
+Hi! I'm a software engineer based in Barcelona, Spain.
 
-Haskell enthusiast.
+I am currently working on my master's thesis _Distributed Complex Event Patterns_ at [Universitat Politècnica de Catalunya](https://www.fib.upc.edu/).
+I am also working part-time at [coinweb.io](https://coinweb.io/).
 
-Some of my contributions to the open source community:
+I have a strong interest in functional programming, Haskell in particular.
+My main interests are programming language theory and compilers.
+In my spare time, I enjoy playing with dependently typed languages, most notably Agda.
 
-- [twitch-game](https://github.com/monadplus/twitch-game/), backend for "Otter Chaos Repair (author)
-- [equality](https://monadplus.github.io/equality/), a test utility library for Scala (author)
-- [scala-pet-store](https://github.com/pauljamescleary/scala-pet-store), a pure functional implementation of the java pet store (former-contributor)
-- [fs2](https://github.com/functional-streams-for-scala/fs2), functional streams for Scala (former-contributor)
+## Projects
 
-Here are some of my talks:
+- [rbst](https://hackage.haskell.org/package/rbst), randomized binary trees for Haskell
+- [cpp-lang](https://github.com/monadplus/CPP-lang), a toy programming language written in Haskell
+- [twitch-game](https://github.com/monadplus/twitch-game/), backend for _Otter Chaos Repair_(hackaton game)
+- [equality](https://monadplus.github.io/equality/), a test utility library for Scala
+
+## Talks
 
 - [Generic Programming in Scala with Shapeless](https://github.com/monadplus/intro-shapeless)
 - [Lenses in Scala with Monacle](https://github.com/monadplus/scala-lenses)
-- [Parallelism and Concurrency in Haskell](https://github.com/monadplus/parconc-examples/tree/master/notes)
+- [Parallelism and Concurrency in Haskell](https://github.com/monadplus/parconc-notes/tree/main/talk)
