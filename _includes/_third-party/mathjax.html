@@ -1,13 +1,13 @@
 {% if site.mathjax.enable %}
   {% if page.layout == 'index' or page.mathjax or site.mathjax.per_page == nil or site.mathjax.per_page == false %}
     <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+         processEscapes: true,
+         skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+       }
+     });
     </script>
 
     <script type="text/x-mathjax-config">

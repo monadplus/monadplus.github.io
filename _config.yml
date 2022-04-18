@@ -4,7 +4,7 @@
 # ---------------------------------------------------------------
 
 # Site
-title: monadplus.pro
+title: Monad+
 subtitle: A blog about functional programming
 description:
 author: Arnau Abella
@@ -95,7 +95,7 @@ keywords: "haskell, nix, functional programming, blog"
 # Set rss to false to disable feed link.
 # Leave rss as empty to use site's feed link.
 # Set rss to specific value if you have burned your feed already.
-rss: false
+rss:
 
 # Specify the date when the site was setup
 #since: 2015
@@ -107,7 +107,7 @@ authoricon: heart
 copyright: true
 
 footer:
-  since: 2020
+  since: 2022
 
 # ---------------------------------------------------------------
 # SEO Settings
@@ -135,7 +135,7 @@ menu:
   #categories: /categories/
   about: /about/
   archives: /archives/
-  #tags: /tags/
+  tags: /tags/
   #sitemap: /sitemap.xml
   #commonweal: /404.html
 
@@ -228,7 +228,7 @@ font:
 social:
   github: https://github.com/monadplus
   twitter: https://twitter.com/monadplus
-  mail: mailto:arnauabella@gmail.com
+  mail: mailto:arnau.abella@monadplus.pro
   cv: /assets/documents/cv.pdf
 
 
@@ -273,8 +273,8 @@ sidebar:
   #  - always  expand for all pages automatically
   #  - hide    expand only when click on the sidebar toggle icon.
   #  - remove  Totally remove sidebar including sidebar toggle.
-  display: post
-  #display: always
+  # display: post
+  display: always
   #display: hide
   #display: remove
 
@@ -283,10 +283,10 @@ sidebar:
   offset_float: 0
 
   # Back to top in sidebar
-  b2t: false
+  b2t: true
 
   # Scroll percent label in b2t button
-  scrollpercent: false
+  scrollpercent: true
 
 
 # Blog rolls
@@ -371,8 +371,8 @@ highlight_theme: normal
 
 # MathJax Support
 mathjax:
-  enable: false
-  per_page: false
+  enable: true
+  # per_page: true
   cdn: //cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML
 
 # Han Support docs: https://hanzi.pro/
@@ -599,12 +599,12 @@ algolia_search:
 
 # Local search
 local_search:
-  enable: false
+  enable: true
   # if auto, trigger search by changing input
   # if manual, trigger search by pressing enter key or search button
   trigger: auto
   # show top n results per article, show all results by setting to -1
-  top_n_per_article: 1
+  top_n_per_article: -1
 
 # External URL with BASE64 encrypt & decrypt
 # Usage: {% exturl text url "title" %}
