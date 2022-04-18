@@ -22,6 +22,13 @@
 
 
 
+  
+  
+    
+    
+  <script src="/assets/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/assets/lib/pace/pace-theme-center-simple.min.css?v=1.0.2" rel="stylesheet">
+
 
 
 
@@ -83,7 +90,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="haskell,ghc,nix,tooling," />
+  <meta name="keywords" content="haskell,nix," />
 
 
 
@@ -110,10 +117,10 @@
 
 
 <meta name="description" content="In this post, we are going to explore the different approaches to run Haskell scripts without having to depend on an installing GHC in the distribution. We are going to explore how Nix can help us to solve this issue and improve the ergonomics of our scripts.">
-<meta name="keywords" content="haskell, ghc, nix, tooling">
+<meta name="keywords" content="haskell, nix">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Running a Haskell Script without GHC">
-<meta property="og:url" content="http://localhost:4000/haskell/nix/tooling/2020/03/10/running-haskell-scripts/">
+<meta property="og:url" content="http://localhost:4000/haskell/nix/2020/03/10/running-haskell-scripts/">
 <meta property="og:site_name" content="monadplus.pro">
 <meta property="og:description" content="In this post, we are going to explore the different approaches to run Haskell scripts without having to depend on an installing GHC in the distribution. We are going to explore how Nix can help us to solve this issue and improve the ergonomics of our scripts.">
 <meta property="og:locale" content="en">
@@ -157,6 +164,15 @@
 
 
 
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', '{"tracking_id"=>"UA-160258919-1", "only_pageview"=>false}', 'auto');
+  ga('send', 'pageview');
+</script>
 
 
 
@@ -278,7 +294,7 @@
   
 
   <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/haskell/nix/tooling/2020/03/10/running-haskell-scripts/">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/haskell/nix/2020/03/10/running-haskell-scripts/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arnau Abella">
@@ -355,23 +371,22 @@
 
                 
                 
-                  , 
-                
-              
-                
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/category/#/tooling" itemprop="url" rel="index">
-                    <span itemprop="name">tooling</span>
-                  </a>
-                </span>
-
-                
-                
               
             </span>
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/haskell/nix/2020/03/10/running-haskell-scripts/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="/haskell/nix/2020/03/10/running-haskell-scripts/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -413,7 +428,7 @@
 
   <h1 id="introduction">Introduction</h1>
 
-<p>Given the following haskell script <code class="highlighter-rouge">generate-random-samples.hs</code> that requires <a href="https://hackage.haskell.org/package/mwc-random-0.14.0.0">mwc-random</a></p>
+<p>Given the following haskell script <code class="language-plaintext highlighter-rouge">generate-random-samples.hs</code> that requires <a href="https://hackage.haskell.org/package/mwc-random-0.14.0.0">mwc-random</a></p>
 
 <div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10</pre></td><td class="code"><pre class="highlight"><code><span class="cp">{-# LANGUAGE ScopedTypeVariables #-}</span>
 
@@ -437,7 +452,7 @@
 nix-shell&gt; runghc generate-random-samples.hs
 </code></pre></td></tr></tbody></table></div></div>
 
-<p>In order to reuse the command so other people can run the script, you can add the following <code class="highlighter-rouge">shell.nix</code>:</p>
+<p>In order to reuse the command so other people can run the script, you can add the following <code class="language-plaintext highlighter-rouge">shell.nix</code>:</p>
 
 <div class="language-nix highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20</pre></td><td class="code"><pre class="highlight"><code><span class="p">{</span> <span class="nv">compiler</span> <span class="o">?</span> <span class="s2">"ghc881"</span> <span class="p">}:</span>
 <span class="kd">let</span>
@@ -461,7 +476,7 @@ nix-shell&gt; runghc generate-random-samples.hs
 <span class="p">}</span>
 </code></pre></td></tr></tbody></table></div></div>
 
-<p>So now you only need to call <code class="highlighter-rouge">$ nix-shell</code> to enter into a pure shell with a specific GHC version that includes all your dependencies:</p>
+<p>So now you only need to call <code class="language-plaintext highlighter-rouge">$ nix-shell</code> to enter into a pure shell with a specific GHC version that includes all your dependencies:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>nix-shell
 nix-shell&gt; runghc generate-random-samples.hs
@@ -491,6 +506,25 @@ nix-shell&gt; runghc generate-random-samples.hs
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code>./generate-random-samples.hs
 <span class="o">[</span>6052359640365008112,3693984866634705670,6521947999724514858,640433474764908030,-4262896110044960033,-1795671341099353119,-2220462704949887998,-248182841640258167,709016591698961687,-3622504171575206589,5987258113070378446,-159251391303273987,-8449937247808153766,6165509553180365166,-8199532339362621783,-9187765480154042269,-2389922548196927048,-4842141643835297495,-1106748185069026877,826927505518387091]
+</code></pre></td></tr></tbody></table></div></div>
+
+<h1 id="update-11-03-2020">Update: 11-03-2020</h1>
+
+<p>After reading the following <a href="https://www.reddit.com/r/haskell/comments/fgdngc/running_a_haskell_script_without_ghc_using_nix/fk56fut/">comment in reddit</a>, I think it is worth mentioning that you can achieve <em>better modularity</em> in exchange of <em>maintainability</em>, by having everything on the haskell script, without having to depend on a <code class="language-plaintext highlighter-rouge">shell.nix</code> file:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13</pre></td><td class="code"><pre class="highlight"><code><span class="o">#!/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">env</span> <span class="n">nix</span><span class="o">-</span><span class="n">shell</span>
+<span class="o">#!</span><span class="n">nix</span><span class="o">-</span><span class="n">shell</span> <span class="o">-</span><span class="n">i</span> <span class="n">runghc</span> <span class="o">-</span><span class="n">p</span> <span class="s">"haskellPackages.ghcWithPackages (pkgs: with pkgs; [ mwc-random ])"</span>
+<span class="o">#!</span><span class="n">nix</span><span class="o">-</span><span class="n">shell</span> <span class="o">-</span><span class="kt">I</span> <span class="n">nixpkgs</span><span class="o">=</span><span class="n">https</span><span class="o">://</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="kt">NixOS</span><span class="o">/</span><span class="n">nixpkgs</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">d373d80b1207d52621961b16aa4a3438e4f98167</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="cp">{-# LANGUAGE ScopedTypeVariables #-}</span>
+
+<span class="kr">import</span> <span class="nn">System.Random.MWC</span>
+<span class="kr">import</span> <span class="nn">Data.Vector.Unboxed</span>
+<span class="kr">import</span> <span class="nn">Control.Monad.ST</span>
+
+<span class="n">main</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="n">vs</span> <span class="o">&lt;-</span> <span class="n">withSystemRandom</span> <span class="o">$</span>
+        <span class="nf">\</span><span class="p">(</span><span class="n">gen</span><span class="o">::</span><span class="kt">GenST</span> <span class="n">s</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uniformVector</span> <span class="n">gen</span> <span class="mi">20</span> <span class="o">::</span> <span class="kt">ST</span> <span class="n">s</span> <span class="p">(</span><span class="kt">Vector</span> <span class="kt">Int</span><span class="p">)</span>
+  <span class="n">print</span> <span class="n">vs</span>
 </code></pre></td></tr></tbody></table></div></div>
 
 
@@ -526,13 +560,7 @@ nix-shell&gt; runghc generate-random-samples.hs
             <a href="/tag/#/haskell" rel="tag"># haskell</a>
           
             
-            <a href="/tag/#/ghc" rel="tag"># ghc</a>
-          
-            
             <a href="/tag/#/nix" rel="tag"># nix</a>
-          
-            
-            <a href="/tag/#/tooling" rel="tag"># tooling</a>
           
         </div>
       
@@ -544,6 +572,22 @@ nix-shell&gt; runghc generate-random-samples.hs
       
 
       
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/haskell/2021/09/24/fizz-buzz/" rel="next" title="The Fizz Buzz problem">
+                <i class="fa fa-chevron-left"></i> The Fizz Buzz problem
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
       
 
@@ -563,6 +607,13 @@ nix-shell&gt; runghc generate-random-samples.hs
 
           
   <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
     
   </div>
 
@@ -621,7 +672,7 @@ nix-shell&gt; runghc generate-random-samples.hs
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -632,7 +683,7 @@ nix-shell&gt; runghc generate-random-samples.hs
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">categories</span>
               </a>
             </div>
@@ -643,7 +694,7 @@ nix-shell&gt; runghc generate-random-samples.hs
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -694,18 +745,7 @@ nix-shell&gt; runghc generate-random-samples.hs
               
               
               <span class="links-of-author-item">
-                <a href="https://gist.github.com/monadplus/" target="_blank" title="gist">
-                  
-                    <i class="fa fa-fw fa-github-alt"></i>
-                  
-                  gist
-                </a>
-              </span>
-            
-              
-              
-              <span class="links-of-author-item">
-                <a href="/assets/documents/cv2019.pdf" target="_blank" title="cv">
+                <a href="/assets/documents/cv.pdf" target="_blank" title="cv">
                   
                     <i class="fa fa-fw fa-book"></i>
                   
@@ -747,7 +787,7 @@ nix-shell&gt; runghc generate-random-samples.hs
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-1"> <a class="nav-link" href="#introduction"> <span class="nav-number">1</span> <span class="nav-text">Introduction</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#initial-approach"> <span class="nav-number">2</span> <span class="nav-text">Initial approach</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#improving-the-first-approach"> <span class="nav-number">3</span> <span class="nav-text">Improving the first approach</span> </a> </li>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#introduction"> <span class="nav-number">1</span> <span class="nav-text">Introduction</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#initial-approach"> <span class="nav-number">2</span> <span class="nav-text">Initial approach</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#improving-the-first-approach"> <span class="nav-number">3</span> <span class="nav-text">Improving the first approach</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#update-11-03-2020"> <span class="nav-number">4</span> <span class="nav-text">Update: 11-03-2020</span> </a> </li>
     </ol>
   </div>
             
@@ -772,7 +812,7 @@ nix-shell&gt; runghc generate-random-samples.hs
   
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -915,35 +955,37 @@ nix-shell&gt; runghc generate-random-samples.hs
 
   
 
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-  
+    
+      <script id="dsq-count-scr" src="https://monadplus.disqus.com/count.js" async></script>
+    
 
     
+      
+      <script type="text/javascript">
+          var disqus_config = function () {
+              this.page.url = 'http://localhost:4000/haskell/nix/2020/03/10/running-haskell-scripts/';
+              this.page.identifier = '/haskell/nix/2020/03/10/running-haskell-scripts/';
+              this.page.title = 'Running a Haskell Script without GHC';
+          };
+          var d = document, s = d.createElement('script');
+          s.src = 'https://monadplus.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', '' + +new Date());
+          (d.head || d.body).appendChild(s);
+      </script>
+      
+    
+
+  
+
+
+
+
+
+
+
+
+
+
 
   
 

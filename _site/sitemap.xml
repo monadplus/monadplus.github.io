@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://localhost:4000/haskell/nix/tooling/2020/03/10/running-haskell-scripts/</loc>
+<loc>http://localhost:4000/haskell/nix/2020/03/10/running-haskell-scripts/</loc>
 <lastmod>2020-03-10T00:00:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/category/</loc>
+<loc>http://localhost:4000/haskell/2021/09/24/fizz-buzz/</loc>
+<lastmod>2021-09-24T00:00:00+02:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/haskell/2021/10/14/th/</loc>
+<lastmod>2021-10-14T00:00:00+02:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/tag/</loc>
@@ -14,10 +19,13 @@
 <loc>http://localhost:4000/tags/</loc>
 </url>
 <url>
-<loc>http://localhost:4000/categories/</loc>
+<loc>http://localhost:4000/category/</loc>
 </url>
 <url>
 <loc>http://localhost:4000/archives/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/categories/</loc>
 </url>
 <url>
 <loc>http://localhost:4000/</loc>
@@ -32,7 +40,7 @@
 <loc>http://localhost:4000/assets/lib/jquery_lazyload/</loc>
 </url>
 <url>
-<loc>http://localhost:4000/assets/documents/cv2019.pdf</loc>
-<lastmod>2019-12-31T09:00:53+01:00</lastmod>
+<loc>http://localhost:4000/assets/documents/cv.pdf</loc>
+<lastmod>2022-01-23T11:40:14+01:00</lastmod>
 </url>
 </urlset>

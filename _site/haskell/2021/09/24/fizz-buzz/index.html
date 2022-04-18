@@ -90,7 +90,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="haskell, nix, functional programming, blog" />
+  <meta name="keywords" content="haskell,type-level programming," />
 
 
 
@@ -116,14 +116,17 @@
 
 
 
-<meta name="keywords" content="haskell, nix, functional programming, blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="monadplus.pro">
-<meta property="og:url" content="http://localhost:4000/">
+<meta name="description" content="In this post we are going to explore an implementation in Haskell of the well-known program Fizz Buzz but on the type-level.">
+<meta name="keywords" content="haskell, type-level programming">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Fizz Buzz problem">
+<meta property="og:url" content="http://localhost:4000/haskell/2021/09/24/fizz-buzz/">
 <meta property="og:site_name" content="monadplus.pro">
+<meta property="og:description" content="In this post we are going to explore an implementation in Haskell of the well-known program Fizz Buzz but on the type-level.">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="monadplus.pro">
+<meta name="twitter:title" content="The Fizz Buzz problem">
+<meta name="twitter:description" content="In this post we are going to explore an implementation in Haskell of the well-known program Fizz Buzz but on the type-level.">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -156,7 +159,7 @@
 
 
 
-  <title>monadplus.pro</title>
+  <title>The Fizz Buzz problem | monadplus.pro</title>
   
 
 
@@ -190,7 +193,7 @@
   
   
 
-  <div class="container sidebar-position-left page-home ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -280,174 +283,9 @@
           <div id="content" class="content">
             
 
-
-
-<section id="posts" class="posts-expand">
-  
-    
-    
-
-  
-
+<div id="posts" class="posts-expand">
   
   
-  
-
-  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/haskell/2021/10/14/th/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Arnau Abella">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/assets/images/portrait.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="monadplus.pro">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-          
-          
-            
-                
-                <a class="post-title-link" href="/haskell/2021/10/14/th/" itemprop="url">
-                Template Haskell — Use Cases
-              </a>
-            
-          
-        </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-10-14T00:00:00+02:00">
-                2021-10-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/category/#/haskell" itemprop="url" rel="index">
-                    <span itemprop="name">haskell</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/haskell/2021/10/14/th/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="/haskell/2021/10/14/th/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          In this blog, we are going to introduce a few uses cases of Template Haskell such as type class instances derivation, n-ary function generation, a quasiquoter for compile-time input validation and running arbitrary IO at compile time.
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/haskell/2021/10/14/th/">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-        
-        
-        
-        
-          <div class="post-eof"></div>
-        
-      
-    </footer>
-  </article>
-
-  
-    
-    
 
   
 
@@ -476,12 +314,7 @@
           <h2 class="post-title" itemprop="name headline">
           
           
-            
-                
-                <a class="post-title-link" href="/haskell/2021/09/24/fizz-buzz/" itemprop="url">
-                The Fizz Buzz problem
-              </a>
-            
+            The Fizz Buzz problem
           
         </h2>
         
@@ -553,6 +386,8 @@
           
 
           
+            
+          
 
         </div>
       </header>
@@ -565,227 +400,171 @@
 
       
         
-          In this post we are going to explore an implementation in Haskell of the well-known program Fizz Buzz but on the type-level.
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/haskell/2021/09/24/fizz-buzz/">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <p>This morning, I saw <a href="https://twitter.com/cercerilla/status/1441994898870177796?s=20">this blog</a> by <a href="https://twitter.com/cercerilla/">@cercerilla</a> on twitter. I was fascinated by her implementation but I couldn’t believe how many lines of code it took to write such a simple program! The <em>Fizz Buzz</em> problem can be implemented on the term level with only a few lines of code:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8</pre></td><td class="code"><pre class="highlight"><code><span class="n">fizz</span> <span class="o">::</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">fizz</span> <span class="n">n</span> <span class="o">|</span> <span class="n">n</span> <span class="p">`</span><span class="n">mod</span><span class="p">`</span> <span class="mi">15</span> <span class="o">==</span> <span class="mi">0</span>  <span class="o">=</span> <span class="s">"FizzBuzz"</span>
+       <span class="o">|</span> <span class="n">n</span> <span class="p">`</span><span class="n">mod</span><span class="p">`</span> <span class="mi">3</span>  <span class="o">==</span> <span class="mi">0</span>  <span class="o">=</span> <span class="s">"Fizz"</span>
+       <span class="o">|</span> <span class="n">n</span> <span class="p">`</span><span class="n">mod</span><span class="p">`</span> <span class="mi">5</span>  <span class="o">==</span> <span class="mi">0</span>  <span class="o">=</span> <span class="s">"Buzz"</span>
+       <span class="o">|</span> <span class="n">otherwise</span>        <span class="o">=</span> <span class="n">show</span> <span class="n">n</span>
+
+<span class="n">main</span> <span class="o">::</span> <span class="kt">IO</span><span class="nb">()</span>
+<span class="n">main</span> <span class="o">=</span> <span class="n">traverse_</span> <span class="p">(</span><span class="n">putStrLn</span> <span class="o">.</span> <span class="n">fizz</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="o">..</span><span class="mi">100</span><span class="p">]</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>One of the main problems of type-level programming in Haskell is that you cannot implement higher-order functions on the type level (see <a href="https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0242-unsaturated-type-families.rst#recap-saturation-restriction">saturation restriction</a>). Therefore, we cannot abstract as much as we do on the term level using <code class="language-plaintext highlighter-rouge">traverse</code> and <code class="language-plaintext highlighter-rouge">[1..100]</code>. There is an accepted proposal <a href="https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0242-unsaturated-type-families.rst">unsaturated type families</a> but it still not merged into GHC.</p>
+
+<p>Are we doomed to write a lot of boilerplate code as in <code class="language-plaintext highlighter-rouge">@cercerilla</code> example? The answer is no, there is a workaround to this problem called <em>defunctionalization</em>. Defunctionalization translates higher-order functions into first-order functions:</p>
+
+<ol>
+  <li>Instead of working with functions, work with symbols representing functions.</li>
+  <li>Build your final functions and values by composing and combining these symbols.</li>
+  <li>At the end of it all, have a single <code class="language-plaintext highlighter-rouge">apply</code> function interpret all of your symbols and produce the value you want.</li>
+</ol>
+
+<p>This idea of defunctionalization is implemented in the <a href="https://hackage.haskell.org/package/singletons">singletons</a> and in <a href="https://hackage.haskell.org/package/first-class-families">first-class-families</a>.</p>
+
+<p>Below we present the implementation of <em>Fizz Buzz</em> on the type-level using the <code class="language-plaintext highlighter-rouge">singletons</code> library(you can achieve a similar result using <code class="language-plaintext highlighter-rouge">fcf</code> package). The implementation is many times smaller than the one implemented using ad hoc higher-order combinators and easier to understand since most of the complexity is moved away to the singletons’ library.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45</pre></td><td class="code"><pre class="highlight"><code><span class="cp">{-# LANGUAGE AllowAmbiguousTypes #-}</span>
+<span class="cp">{-# LANGUAGE DataKinds #-}</span>
+<span class="cp">{-# LANGUAGE FlexibleContexts #-}</span>
+<span class="cp">{-# LANGUAGE RankNTypes #-}</span>
+<span class="cp">{-# LANGUAGE ScopedTypeVariables #-}</span>
+<span class="cp">{-# LANGUAGE StandaloneKindSignatures #-}</span>
+<span class="cp">{-# LANGUAGE TypeApplications #-}</span>
+<span class="cp">{-# LANGUAGE TypeFamilies #-}</span>
+<span class="cp">{-# LANGUAGE TypeOperators #-}</span>
+<span class="cp">{-# LANGUAGE UndecidableInstances #-}</span>
+<span class="cp">{-# LANGUAGE TemplateHaskell #-}</span>
+<span class="cp">{-# LANGUAGE PolyKinds #-}</span>
+<span class="cp">{-# LANGUAGE GADTs #-}</span>
+
+<span class="kr">module</span> <span class="nn">FizzBuzz</span> <span class="kr">where</span>
+
+<span class="kr">import</span> <span class="nn">Data.Singletons.TH</span>
+<span class="kr">import</span> <span class="nn">Data.Singletons.Prelude</span>
+<span class="kr">import</span> <span class="nn">Data.Singletons.TypeLits</span>
+
+<span class="o">$</span><span class="p">(</span><span class="n">singletons</span> <span class="o">[</span><span class="n">d</span><span class="o">|</span>
+  type Divisible n by = Mod n by == 0
+
+  type FizzBuzzElem :: Nat -&gt; Symbol
+  type FizzBuzzElem n =
+      If
+        (Divisible n 15)
+        "FizzBuzz"
+        ( If
+            (Divisible n 3)
+            "Fizz"
+            ( If
+                (Divisible n 5)
+                "Buzz"
+                (Show_ n)))
+
+  <span class="o">|]</span><span class="p">)</span>
+
+<span class="kr">type</span> <span class="kt">FizzBuzz</span> <span class="n">n</span> <span class="o">=</span> <span class="kt">Fmap</span> <span class="kt">FizzBuzzElemSym0</span> <span class="p">(</span><span class="kt">EnumFromTo</span> <span class="mi">1</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="cd">-- |</span>
+<span class="c1">-- &gt;&gt;&gt; fizzBuzz @10</span>
+<span class="c1">-- "[FizzBuzz,1,2,Fizz,4,Buzz,Fizz,7,8,Fizz]"</span>
+<span class="n">fizzBuzz</span> <span class="o">::</span> <span class="n">forall</span> <span class="p">(</span><span class="n">n</span> <span class="o">::</span> <span class="kt">Nat</span><span class="p">)</span><span class="o">.</span> <span class="p">(</span><span class="kt">KnownSymbol</span> <span class="p">(</span><span class="kt">Show_</span> <span class="p">(</span><span class="kt">FizzBuzz</span> <span class="n">n</span><span class="p">)))</span> <span class="o">=&gt;</span> <span class="kt">String</span>
+<span class="n">fizzBuzz</span> <span class="o">=</span> <span class="n">symbolVal</span> <span class="p">(</span><span class="kt">Proxy</span> <span class="o">@</span><span class="p">(</span><span class="kt">Show_</span> <span class="p">(</span><span class="kt">FizzBuzz</span> <span class="n">n</span><span class="p">)))</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>Type-level programming in Haskell is still a difficult task since the support for higher-order abstractions is still not available in the language. With the use of libraries such as <code class="language-plaintext highlighter-rouge">singletons</code> we can make this task less difficult reusing many higher-order abstractions on the type level.</p>
+
+
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
     <div>
+      
+        
+
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-        
-        
-        
-        
-          <div class="post-eof"></div>
-        
-      
-    </footer>
-  </article>
-
-  
-    
-    
-
-  
-
-  
-  
-  
-
-  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/haskell/nix/2020/03/10/running-haskell-scripts/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Arnau Abella">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/assets/images/portrait.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="monadplus.pro">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-          
+        <div class="post-tags">
           
             
-                
-                <a class="post-title-link" href="/haskell/nix/2020/03/10/running-haskell-scripts/" itemprop="url">
-                Running a Haskell Script without GHC
+            <a href="/tag/#/haskell" rel="tag"># haskell</a>
+          
+            
+            <a href="/tag/#/type-level%20programming" rel="tag"># type-level programming</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/haskell/2021/10/14/th/" rel="next" title="Template Haskell — Use Cases">
+                <i class="fa fa-chevron-left"></i> Template Haskell — Use Cases
               </a>
             
-          
-        </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-10T00:00:00+01:00">
-                2020-03-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/category/#/haskell" itemprop="url" rel="index">
-                    <span itemprop="name">haskell</span>
-                  </a>
-                </span>
-
-                
-                
-                  , 
-                
-              
-                
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/category/#/nix" itemprop="url" rel="index">
-                    <span itemprop="name">nix</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/haskell/nix/2020/03/10/running-haskell-scripts/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="/haskell/nix/2020/03/10/running-haskell-scripts/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          In this post, we are going to explore the different approaches to run Haskell scripts without having to depend on an installing GHC in the distribution. We are going to explore how Nix can help us to solve this issue and improve the ergonomics of our scripts.
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/haskell/nix/2020/03/10/running-haskell-scripts/">
-              Read more &raquo;
-            </a>
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
 
-    <div>
-      
-    </div>
+          <span class="post-nav-divider"></span>
 
-    <div>
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/haskell/nix/2020/03/10/running-haskell-scripts/" rel="prev" title="Running a Haskell Script without GHC">
+                Running a Haskell Script without GHC <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
       
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
       
 
-      
-
-      
-
-      
-        
-        
-        
-        
-          <div class="post-eof"></div>
-        
       
     </footer>
   </article>
 
-  
-</section>
-
-
-
+  <div class="post-spread">
+    
+  </div>
+</div>
 
 
           </div>
@@ -793,6 +572,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -808,6 +598,17 @@
 
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
 
       
 
@@ -1087,6 +888,20 @@
       <script id="dsq-count-scr" src="https://monadplus.disqus.com/count.js" async></script>
     
 
+    
+      
+      <script type="text/javascript">
+          var disqus_config = function () {
+              this.page.url = 'http://localhost:4000/haskell/2021/09/24/fizz-buzz/';
+              this.page.identifier = '/haskell/2021/09/24/fizz-buzz/';
+              this.page.title = 'The Fizz Buzz problem';
+          };
+          var d = document, s = d.createElement('script');
+          s.src = 'https://monadplus.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', '' + +new Date());
+          (d.head || d.body).appendChild(s);
+      </script>
+      
     
 
   

@@ -1,0 +1,1261 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+    
+    
+  <script src="/assets/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/assets/lib/pace/pace-theme-center-simple.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="haskell,template-haskell,meta-programming," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="In this blog, we are going to introduce a few uses cases of Template Haskell such as type class instances derivation, n-ary function generation, a quasiquoter for compile-time input validation and running arbitrary IO at compile time.">
+<meta name="keywords" content="haskell, template-haskell, meta-programming">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Template Haskell — Use Cases">
+<meta property="og:url" content="http://localhost:4000/haskell/2021/10/14/th/">
+<meta property="og:site_name" content="monadplus.pro">
+<meta property="og:description" content="In this blog, we are going to introduce a few uses cases of Template Haskell such as type class instances derivation, n-ary function generation, a quasiquoter for compile-time input validation and running arbitrary IO at compile time.">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Template Haskell — Use Cases">
+<meta name="twitter:description" content="In this blog, we are going to introduce a few uses cases of Template Haskell such as type class instances derivation, n-ary function generation, a quasiquoter for compile-time input validation and running arbitrary IO at compile time.">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>Template Haskell — Use Cases | monadplus.pro</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', '{"tracking_id"=>"UA-160258919-1", "only_pageview"=>false}', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">monadplus.pro</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">A blog about functional programming</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/haskell/2021/10/14/th/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arnau Abella">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/images/portrait.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="monadplus.pro">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+          
+          
+            Template Haskell — Use Cases
+          
+        </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-10-14T00:00:00+02:00">
+                2021-10-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/haskell" itemprop="url" rel="index">
+                    <span itemprop="name">haskell</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/haskell/2021/10/14/th/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="/haskell/2021/10/14/th/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <h1 id="introduction">Introduction</h1>
+
+<p><em>Template Haskell</em> (TH) is an extension of <a href="https://www.haskell.org/ghc/">GHC</a> that allows the user to do type-safe compile-time meta-programming in <em>Haskell</em>. The idea behind template haskell comes from the paper <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/meta-haskell.pdf">“Template Meta-programming for Haskell”</a> by S.P. Jones and T. Sheard. Template Haskell was shipped with <a href="https://www.haskell.org/ghc/download_ghc_600.html">GHC version 6.0</a>. The compiler extension has evolved a lot since 2003 and its current state is well described at the <a href="https://downloads.haskell.org/ghc/latest/docs/html/users_guide/exts/template_haskell.html">GHC: User Manual</a> and <a href="https://hackage.haskell.org/package/template-haskell">template-haskell</a> package.</p>
+
+<p>Initially, TH offered the ability to generate code at compile time and allowed the programmer to manipulate the <em>abstract syntax tree</em> (AST) of the program. The addition of new capabilities such as <a href="https://hackage.haskell.org/package/template-haskell-2.17.0.0/docs/Language-Haskell-TH-Syntax.html#t:Lift">lifting</a>, <a href="https://hackage.haskell.org/package/template-haskell-2.17.0.0/docs/Language-Haskell-TH.html#t:TExp">TExp</a> , <a href="https://hackage.haskell.org/package/template-haskell-2.17.0.0/docs/Language-Haskell-TH-Syntax.html#v:runIO">runIO</a>, and <a href="https://hackage.haskell.org/package/template-haskell-2.17.0.0/docs/Language-Haskell-TH-Quote.html">quasiquoting</a> opened a bunch of new use cases to explore.</p>
+
+<p>In this blog post, we are going explore a bunch of interesting Template Haskell’s use cases:</p>
+
+<ul>
+  <li>Type Class Derivation</li>
+  <li>N-ary Function Generation</li>
+  <li>Compile-time Static Input Validation</li>
+  <li>Arbitrary IO at Compile Time</li>
+</ul>
+
+<p>This article assumes some familiarity with Haskell and, in particular, with Template Haskell. There are many well-written tutorials on the internet such as <a href="https://wiki.haskell.org/A_practical_Template_Haskell_Tutorial">A Practical Template Haskell Tutorial</a> or <a href="https://markkarpov.com/tutorial/th.html">Template Haskell Tutorial</a>.  We strongly recommend reading the previously mentioned tutorials before continuing with the reading.</p>
+
+<h1 id="use-cases">Use Cases</h1>
+
+<p>Before we start, these are the list of <em>language extensions</em> and <em>imports</em> that we are going to use in the following sections:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8</pre></td><td class="code"><pre class="highlight"><code><span class="cp">{-# LANGUAGE AllowAmbiguousTypes #-}</span>
+<span class="cp">{-# LANGUAGE FlexibleInstances #-}</span>
+<span class="cp">{-# LANGUAGE OverloadedStrings #-}</span>
+<span class="cp">{-# LANGUAGE ScopedTypeVariables #-}</span>
+<span class="cp">{-# LANGUAGE TemplateHaskell #-}</span>
+<span class="cp">{-# LANGUAGE TypeApplications #-}</span>
+<span class="cp">{-# LANGUAGE UndecidableInstances #-}</span>
+<span class="cp">{-# LANGUAGE ViewPatterns #-}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17</pre></td><td class="code"><pre class="highlight"><code><span class="kr">import</span> <span class="nn">Codec.Picture</span>
+<span class="kr">import</span> <span class="nn">Control.Applicative</span> <span class="p">(</span><span class="kt">ZipList</span> <span class="p">(</span><span class="o">..</span><span class="p">))</span>
+<span class="kr">import</span> <span class="nn">Control.Monad</span> <span class="p">(</span><span class="nf">replicateM</span><span class="p">,</span> <span class="nf">when</span><span class="p">)</span>
+<span class="kr">import</span> <span class="nn">Data.ByteString</span> <span class="p">(</span><span class="kt">ByteString</span><span class="p">)</span>
+<span class="kr">import</span> <span class="k">qualified</span> <span class="nn">Data.ByteString</span> <span class="k">as</span> <span class="n">BS</span>
+<span class="kr">import</span> <span class="nn">Data.Char</span> <span class="p">(</span><span class="nf">isSpace</span><span class="p">)</span>
+<span class="kr">import</span> <span class="nn">Data.Data</span> <span class="k">hiding</span> <span class="p">(</span><span class="nf">cast</span><span class="p">)</span>
+<span class="kr">import</span> <span class="nn">Data.Foldable</span>
+<span class="kr">import</span> <span class="k">qualified</span> <span class="nn">Data.Text</span> <span class="k">as</span> <span class="n">T</span>
+<span class="kr">import</span> <span class="nn">Data.Word</span>
+<span class="kr">import</span> <span class="nn">Instances.TH.Lift</span> <span class="p">()</span>
+<span class="kr">import</span> <span class="nn">Language.Haskell.TH</span>
+<span class="kr">import</span> <span class="nn">Language.Haskell.TH.Quote</span>
+<span class="kr">import</span> <span class="nn">Language.Haskell.TH.Syntax</span>
+<span class="kr">import</span> <span class="nn">Network.HTTP.Req</span>
+<span class="kr">import</span> <span class="nn">Text.Read</span> <span class="p">(</span><span class="nf">readMaybe</span><span class="p">)</span>
+<span class="kr">import</span> <span class="k">qualified</span> <span class="nn">Text.URI</span> <span class="k">as</span> <span class="n">URI</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h2 id="ex-1-type-class-derivation">Ex 1: Type Class Derivation</h2>
+
+<p>Automatic derivation of type class instances is one of many problems that TH can solve. Although this problem can also be solved by <a href="https://hackage.haskell.org/package/base-4.15.0.0/docs/GHC-Generics.html">generics</a>, the compilation times are usually longer. For this reason, template haskell is still the preferred way to generate type class instances at compile time.</p>
+
+<p>Here we present an example of how to derive the type class <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Foldable.html#t:Foldable">Foldable</a> for arbitrary datatypes.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code><span class="kr">data</span> <span class="kt">List</span> <span class="n">a</span> 
+  <span class="o">=</span> <span class="kt">Nil</span> 
+  <span class="o">|</span> <span class="kt">Cons</span> <span class="n">a</span> <span class="p">(</span><span class="kt">List</span> <span class="n">a</span><span class="p">)</span>
+<span class="n">deriveFoldable</span> <span class="n">''List</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>The implementation is as follows:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45<br/>46<br/>47<br/>48<br/>49<br/>50<br/>51<br/>52<br/>53</pre></td><td class="code"><pre class="highlight"><code><span class="kr">data</span> <span class="kt">Deriving</span> <span class="o">=</span> <span class="kt">Deriving</span> <span class="p">{</span> <span class="n">tyCon</span> <span class="o">::</span> <span class="kt">Name</span><span class="p">,</span> <span class="n">tyVar</span> <span class="o">::</span> <span class="kt">Name</span> <span class="p">}</span>
+  <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Typeable</span><span class="p">)</span>
+
+<span class="n">deriveFoldable</span> <span class="o">::</span> <span class="kt">Name</span> <span class="o">-&gt;</span> <span class="kt">Q</span> <span class="p">[</span><span class="kt">Dec</span><span class="p">]</span>
+<span class="n">deriveFoldable</span> <span class="n">ty</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="p">(</span><span class="kt">TyConI</span> <span class="n">tyCon</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="n">reify</span> <span class="n">ty</span>
+  <span class="p">(</span><span class="n">tyConName</span><span class="p">,</span> <span class="n">tyVars</span><span class="p">,</span> <span class="n">cs</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="kr">case</span> <span class="n">tyCon</span> <span class="kr">of</span>
+    <span class="kt">DataD</span> <span class="kr">_</span> <span class="n">nm</span> <span class="n">tyVars</span> <span class="kr">_</span> <span class="n">cs</span> <span class="kr">_</span>   <span class="o">-&gt;</span> <span class="n">return</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">tyVars</span><span class="p">,</span> <span class="n">cs</span><span class="p">)</span>
+    <span class="kt">NewtypeD</span> <span class="kr">_</span> <span class="n">nm</span> <span class="n">tyVars</span> <span class="kr">_</span> <span class="n">c</span> <span class="kr">_</span> <span class="o">-&gt;</span> <span class="n">return</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">tyVars</span><span class="p">,</span> <span class="p">[</span><span class="n">c</span><span class="p">])</span>
+    <span class="kr">_</span> <span class="o">-&gt;</span> <span class="n">fail</span> <span class="s">"deriveFoldable: tyCon may not be a type synonym."</span>
+
+  <span class="kr">let</span> <span class="p">(</span><span class="kt">KindedTV</span> <span class="n">tyVar</span> <span class="kt">StarT</span><span class="p">)</span> <span class="o">=</span> <span class="n">last</span> <span class="n">tyVars</span>
+  <span class="n">putQ</span> <span class="o">$</span> <span class="kt">Deriving</span> <span class="n">tyConName</span> <span class="n">tyVar</span>
+
+  <span class="kr">let</span> <span class="n">instanceType</span> <span class="o">=</span> <span class="n">conT</span> <span class="n">''Foldable</span> <span class="p">`</span><span class="n">appT</span><span class="p">`</span> <span class="n">foldl'</span> <span class="n">apply</span> <span class="p">(</span><span class="n">conT</span> <span class="n">tyConName</span><span class="p">)</span> <span class="p">(</span><span class="n">init</span> <span class="n">tyVars</span><span class="p">)</span>
+  <span class="n">foldableD</span> <span class="o">&lt;-</span> <span class="n">instanceD</span> <span class="p">(</span><span class="n">return</span> <span class="kt">[]</span><span class="p">)</span> <span class="n">instanceType</span> <span class="p">[</span><span class="n">genFoldMap</span> <span class="n">cs</span><span class="p">]</span>
+  <span class="n">return</span> <span class="p">[</span><span class="n">foldableD</span><span class="p">]</span>
+
+  <span class="kr">where</span>
+    <span class="n">apply</span> <span class="n">t</span> <span class="p">(</span><span class="kt">PlainTV</span> <span class="n">name</span><span class="p">)</span>    <span class="o">=</span> <span class="n">appT</span> <span class="n">t</span> <span class="p">(</span><span class="n">varT</span> <span class="n">name</span><span class="p">)</span>
+    <span class="n">apply</span> <span class="n">t</span> <span class="p">(</span><span class="kt">KindedTV</span> <span class="n">name</span> <span class="kr">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">appT</span> <span class="n">t</span> <span class="p">(</span><span class="n">varT</span> <span class="n">name</span><span class="p">)</span>
+
+<span class="n">genFoldMap</span> <span class="o">::</span> <span class="p">[</span><span class="kt">Con</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="kt">Q</span> <span class="kt">Dec</span>
+<span class="n">genFoldMap</span> <span class="n">cs</span> <span class="o">=</span> <span class="n">funD</span> <span class="n">'foldMap</span> <span class="p">(</span><span class="n">genFoldMapClause</span> <span class="o">&lt;$&gt;</span> <span class="n">cs</span><span class="p">)</span>
+
+<span class="n">genFoldMapClause</span> <span class="o">::</span> <span class="kt">Con</span> <span class="o">-&gt;</span> <span class="kt">Q</span> <span class="kt">Clause</span>
+<span class="n">genFoldMapClause</span> <span class="p">(</span><span class="kt">NormalC</span> <span class="n">name</span> <span class="n">fieldTypes</span><span class="p">)</span>
+  <span class="o">=</span> <span class="kr">do</span> <span class="n">f</span>          <span class="o">&lt;-</span> <span class="n">newName</span> <span class="s">"f"</span>
+       <span class="n">fieldNames</span> <span class="o">&lt;-</span> <span class="n">replicateM</span> <span class="p">(</span><span class="n">length</span> <span class="n">fieldTypes</span><span class="p">)</span> <span class="p">(</span><span class="n">newName</span> <span class="s">"x"</span><span class="p">)</span>
+
+       <span class="kr">let</span> <span class="n">pats</span> <span class="o">=</span> <span class="n">varP</span> <span class="n">f</span> <span class="o">:</span> <span class="p">[</span><span class="n">conP</span> <span class="n">name</span> <span class="p">(</span><span class="n">map</span> <span class="n">varP</span> <span class="n">fieldNames</span><span class="p">)]</span>
+           <span class="n">newFields</span> <span class="o">=</span> <span class="n">newField</span> <span class="n">f</span> <span class="o">&lt;$&gt;</span> <span class="n">zip</span> <span class="n">fieldNames</span> <span class="p">(</span><span class="n">snd</span> <span class="o">&lt;$&gt;</span> <span class="n">fieldTypes</span><span class="p">)</span>
+           <span class="n">body</span> <span class="o">=</span> <span class="n">normalB</span> <span class="o">$</span>
+             <span class="n">foldl'</span> <span class="p">(</span><span class="nf">\</span> <span class="n">b</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="o">|</span> <span class="o">$</span><span class="n">b</span> <span class="o">&lt;&gt;</span> <span class="o">$</span><span class="n">x</span> <span class="o">|</span><span class="p">])</span> <span class="p">(</span><span class="n">varE</span> <span class="n">'mempty</span><span class="p">)</span> <span class="n">newFields</span>
+
+       <span class="n">clause</span> <span class="n">pats</span> <span class="n">body</span> <span class="kt">[]</span>
+<span class="n">genFoldMapClause</span> <span class="kr">_</span> <span class="o">=</span> <span class="n">error</span> <span class="s">"Not supported yet"</span>
+
+<span class="n">newField</span> <span class="o">::</span> <span class="kt">Name</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">Name</span><span class="p">,</span> <span class="kt">Type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">ExpQ</span>
+<span class="n">newField</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fieldType</span><span class="p">)</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="kt">Just</span> <span class="p">(</span><span class="kt">Deriving</span> <span class="n">typeCon</span> <span class="n">typeVar</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="n">getQ</span>
+  <span class="kr">case</span> <span class="n">fieldType</span> <span class="kr">of</span>
+    <span class="kt">VarT</span> <span class="n">typeVar'</span> <span class="o">|</span> <span class="n">typeVar'</span> <span class="o">==</span> <span class="n">typeVar</span> <span class="o">-&gt;</span>
+      <span class="p">[</span><span class="o">|</span> <span class="o">$</span><span class="p">(</span><span class="n">varE</span> <span class="n">f</span><span class="p">)</span> <span class="o">$</span><span class="p">(</span><span class="n">varE</span> <span class="n">x</span><span class="p">)</span> <span class="o">|</span><span class="p">]</span>
+
+    <span class="kt">AppT</span> <span class="n">ty</span> <span class="p">(</span><span class="kt">VarT</span> <span class="n">typeVar'</span><span class="p">)</span> <span class="o">|</span> <span class="n">leftmost</span> <span class="n">ty</span> <span class="o">==</span> <span class="kt">ConT</span> <span class="n">typeCon</span> <span class="o">&amp;&amp;</span> <span class="n">typeVar'</span> <span class="o">==</span> <span class="n">typeVar</span> <span class="o">-&gt;</span>
+        <span class="p">[</span><span class="o">|</span> <span class="n">foldMap</span> <span class="o">$</span><span class="p">(</span><span class="n">varE</span> <span class="n">f</span><span class="p">)</span> <span class="o">$</span><span class="p">(</span><span class="n">varE</span> <span class="n">x</span><span class="p">)</span> <span class="o">|</span><span class="p">]</span>
+
+    <span class="kr">_</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="o">|</span> <span class="n">mempty</span> <span class="o">|</span><span class="p">]</span>
+    
+<span class="n">leftmost</span> <span class="o">::</span> <span class="kt">Type</span> <span class="o">-&gt;</span> <span class="kt">Type</span>
+<span class="n">leftmost</span> <span class="p">(</span><span class="kt">AppT</span> <span class="n">ty1</span> <span class="kr">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">leftmost</span> <span class="n">ty1</span>
+<span class="n">leftmost</span> <span class="n">ty</span>           <span class="o">=</span> <span class="n">ty</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h2 id="ex-2-n-ary-function-generation">Ex 2: N-ary Function Generation</h2>
+
+<p>Have you ever written a function like <code class="language-plaintext highlighter-rouge">snd3 :: (a, b, c) -&gt; b</code> or <code class="language-plaintext highlighter-rouge">snd4 :: (a, b, c, d) -&gt; b</code> ? Then, you can do better by letting the compiler write those boilerplate and error-prone functions for you.</p>
+
+<p>Here we present an example of how to write an arbitrary-sized <a href="https://hackage.haskell.org/package/base-4.15.0.0/docs/GHC-OldList.html#v:zipWith">zipWith</a>. 
+We have chosen <code class="language-plaintext highlighter-rouge">zipWith</code> since it is a fairly simple function but complex enough to be used as the base to write more complex functions.</p>
+
+<p>Here is a first implementation of <code class="language-plaintext highlighter-rouge">zipWithN</code>:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21</pre></td><td class="code"><pre class="highlight"><code><span class="n">zipWithN</span> <span class="o">::</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">Q</span> <span class="p">[</span><span class="kt">Dec</span><span class="p">]</span>
+<span class="n">zipWithN</span> <span class="n">n</span>
+  <span class="o">|</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="o">=</span> <span class="n">sequence</span> <span class="p">[</span><span class="n">funD</span> <span class="n">name</span> <span class="p">[</span><span class="n">cl1</span><span class="p">,</span> <span class="n">cl2</span><span class="p">]]</span>
+  <span class="o">|</span> <span class="n">otherwise</span> <span class="o">=</span> <span class="n">fail</span> <span class="s">"zipWithN: argument n may not be &lt; 2."</span>
+  <span class="kr">where</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">mkName</span> <span class="o">$</span> <span class="s">"zipWith"</span> <span class="o">++</span> <span class="n">show</span> <span class="n">n</span>
+
+    <span class="n">cl1</span> <span class="o">=</span> <span class="kr">do</span>
+      <span class="n">f</span> <span class="o">&lt;-</span> <span class="n">newName</span> <span class="s">"f"</span>
+      <span class="n">xs</span> <span class="o">&lt;-</span> <span class="n">replicateM</span> <span class="n">n</span> <span class="p">(</span><span class="n">newName</span> <span class="s">"x"</span><span class="p">)</span>
+      <span class="n">yss</span> <span class="o">&lt;-</span> <span class="n">replicateM</span> <span class="n">n</span> <span class="p">(</span><span class="n">newName</span> <span class="s">"ys"</span><span class="p">)</span>
+      <span class="kr">let</span> <span class="n">argPatts</span> <span class="o">=</span> <span class="n">varP</span> <span class="n">f</span> <span class="o">:</span> <span class="n">consPatts</span>
+          <span class="n">consPatts</span> <span class="o">=</span> <span class="p">[</span> <span class="o">[</span><span class="n">p</span><span class="o">|</span> $(varP x) : $(varP ys) <span class="o">|]</span>
+                      <span class="o">|</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="n">xs</span> <span class="p">`</span><span class="n">zip</span><span class="p">`</span> <span class="n">yss</span>
+                      <span class="p">]</span>
+          <span class="n">apply</span> <span class="o">=</span> <span class="n">foldl</span> <span class="p">(</span><span class="nf">\</span> <span class="n">g</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="o">|</span> <span class="o">$</span><span class="n">g</span> <span class="o">$</span><span class="p">(</span><span class="n">varE</span> <span class="n">x</span><span class="p">)</span> <span class="o">|</span><span class="p">])</span>
+          <span class="n">first</span> <span class="o">=</span> <span class="n">apply</span> <span class="p">(</span><span class="n">varE</span> <span class="n">f</span><span class="p">)</span> <span class="n">xs</span>
+          <span class="n">rest</span> <span class="o">=</span> <span class="n">apply</span> <span class="p">(</span><span class="n">varE</span> <span class="n">name</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span><span class="n">yss</span><span class="p">)</span>
+      <span class="n">clause</span> <span class="n">argPatts</span> <span class="p">(</span><span class="n">normalB</span> <span class="p">[</span><span class="o">|</span> <span class="o">$</span><span class="n">first</span> <span class="o">:</span> <span class="o">$</span><span class="n">rest</span> <span class="o">|</span><span class="p">])</span> <span class="kt">[]</span>
+
+    <span class="n">cl2</span> <span class="o">=</span> <span class="n">clause</span> <span class="p">(</span><span class="n">replicate</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="n">wildP</span><span class="p">)</span> <span class="p">(</span><span class="n">normalB</span> <span class="p">(</span><span class="n">conE</span> <span class="n">'</span><span class="kt">[]</span><span class="p">))</span> <span class="kt">[]</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>This implementation works fine but the compiler will <code class="language-plaintext highlighter-rouge">warn</code> you about a missing signature on a top-level definition.
+In order to fix this, we need to add a type signature to the generated term:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15</pre></td><td class="code"><pre class="highlight"><code><span class="n">zipWithN</span> <span class="o">::</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">Q</span> <span class="p">[</span><span class="kt">Dec</span><span class="p">]</span>
+<span class="n">zipWithN</span> <span class="n">n</span>
+  <span class="o">|</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="o">=</span> <span class="n">sequence</span> <span class="p">[</span> <span class="n">sigD</span> <span class="n">name</span> <span class="n">ty</span><span class="p">,</span> <span class="n">funD</span> <span class="n">name</span> <span class="p">[</span><span class="n">cl1</span><span class="p">,</span> <span class="n">cl2</span><span class="p">]</span> <span class="p">]</span>
+  <span class="o">...</span>
+  <span class="kr">where</span>
+    <span class="o">...</span>
+
+    <span class="n">ty</span> <span class="o">=</span> <span class="kr">do</span>
+      <span class="n">as</span> <span class="o">&lt;-</span> <span class="n">replicateM</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">newName</span> <span class="s">"a"</span><span class="p">)</span>
+      <span class="kr">let</span> <span class="n">apply</span> <span class="o">=</span> <span class="n">foldr</span> <span class="p">(</span><span class="n">appT</span> <span class="o">.</span> <span class="n">appT</span> <span class="n">arrowT</span><span class="p">)</span>
+          <span class="n">funTy</span> <span class="o">=</span> <span class="n">apply</span> <span class="p">(</span><span class="n">varT</span> <span class="p">(</span><span class="n">last</span> <span class="n">as</span><span class="p">))</span> <span class="p">(</span><span class="n">varT</span> <span class="o">&lt;$&gt;</span> <span class="n">init</span> <span class="n">as</span><span class="p">)</span>
+          <span class="n">listsTy</span> <span class="o">=</span> <span class="n">apply</span> <span class="p">(</span><span class="n">appT</span> <span class="n">listT</span> <span class="p">(</span><span class="n">varT</span> <span class="p">(</span><span class="n">last</span> <span class="n">as</span><span class="p">)))</span> <span class="p">(</span><span class="n">appT</span> <span class="n">listT</span> <span class="o">.</span> <span class="n">varT</span> <span class="o">&lt;$&gt;</span> <span class="n">init</span> <span class="n">as</span><span class="p">)</span>
+      <span class="n">appT</span> <span class="p">(</span><span class="n">appT</span> <span class="n">arrowT</span> <span class="n">funTy</span><span class="p">)</span> <span class="n">listsTy</span>
+    
+    <span class="o">...</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>Now you can use <code class="language-plaintext highlighter-rouge">zipWithN</code> to generate arbitrary-sized <code class="language-plaintext highlighter-rouge">zipWith</code> functions:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="o">...</span>
+<span class="o">$</span><span class="p">(</span><span class="n">zipWithN</span> <span class="mi">6</span><span class="p">)</span>
+<span class="o">$</span><span class="p">(</span><span class="n">zipWithN</span> <span class="mi">7</span><span class="p">)</span>
+<span class="o">$</span><span class="p">(</span><span class="n">zipWithN</span> <span class="mi">8</span><span class="p">)</span>
+<span class="o">...</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>Manually generating each instance partially defeats the purpose of <code class="language-plaintext highlighter-rouge">zipWithN</code>.
+In order to address this issue, we need the auxiliary function <code class="language-plaintext highlighter-rouge">genZipWith</code>. Notice, we will use an alternative simplified definition of <code class="language-plaintext highlighter-rouge">zipWithN</code> that exploits slicing and lifting to showcase.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21</pre></td><td class="code"><pre class="highlight"><code><span class="n">genZipWith</span> <span class="o">::</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">Q</span> <span class="p">[</span><span class="kt">Dec</span><span class="p">]</span>
+<span class="n">genZipWith</span> <span class="n">n</span> <span class="o">=</span> <span class="n">traverse</span> <span class="n">mkDec</span> <span class="p">[</span><span class="mi">1</span><span class="o">..</span><span class="n">n</span><span class="p">]</span>
+  <span class="kr">where</span>
+    <span class="n">mkDec</span> <span class="n">ith</span> <span class="o">=</span> <span class="kr">do</span>
+      <span class="kr">let</span> <span class="n">name</span> <span class="o">=</span> <span class="n">mkName</span> <span class="o">$</span> <span class="s">"zipWith"</span> <span class="o">++</span> <span class="n">show</span> <span class="n">ith</span> <span class="o">++</span> <span class="s">"'"</span>
+      <span class="n">body</span> <span class="o">&lt;-</span> <span class="n">zipWithN</span> <span class="n">ith</span>
+      <span class="n">return</span> <span class="o">$</span> <span class="kt">FunD</span> <span class="n">name</span> <span class="p">[</span><span class="kt">Clause</span> <span class="kt">[]</span> <span class="p">(</span><span class="kt">NormalB</span> <span class="n">body</span><span class="p">)</span> <span class="kt">[]</span><span class="p">]</span>
+
+<span class="n">zipWithN</span> <span class="o">::</span> <span class="kt">Int</span> <span class="o">-&gt;</span> <span class="kt">Q</span> <span class="kt">Exp</span>
+<span class="n">zipWithN</span> <span class="n">n</span> <span class="o">=</span> <span class="kr">do</span>
+    <span class="n">xss</span> <span class="o">&lt;-</span> <span class="n">replicateM</span> <span class="n">n</span> <span class="p">(</span><span class="n">newName</span> <span class="s">"xs"</span><span class="p">)</span>
+    <span class="p">[</span><span class="o">|</span> <span class="nf">\</span><span class="n">f</span> <span class="o">-&gt;</span>
+        <span class="o">$</span><span class="p">(</span><span class="n">lamE</span> <span class="p">(</span><span class="n">varP</span> <span class="o">&lt;$&gt;</span> <span class="n">xss</span><span class="p">)</span>
+                <span class="p">[</span><span class="o">|</span> <span class="n">getZipList</span>
+                    <span class="o">$</span><span class="p">(</span><span class="n">foldl'</span>
+                        <span class="p">(</span><span class="nf">\</span> <span class="n">g</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="o">|</span> <span class="o">$</span><span class="n">g</span> <span class="o">&lt;*&gt;</span> <span class="o">$</span><span class="n">xs</span> <span class="o">|</span><span class="p">])</span>
+                        <span class="p">[</span><span class="o">|</span> <span class="n">pure</span> <span class="n">f</span> <span class="o">|</span><span class="p">]</span>
+                        <span class="p">(</span><span class="n">fmap</span> <span class="p">(</span><span class="nf">\</span><span class="n">xs</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="o">|</span> <span class="kt">ZipList</span> <span class="o">$</span><span class="p">(</span><span class="n">varE</span> <span class="n">xs</span><span class="p">)</span> <span class="o">|</span><span class="p">])</span> <span class="n">xss</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="o">|</span><span class="p">])</span>
+    <span class="o">|</span><span class="p">]</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>Now, we can generate arbitrary sized <code class="language-plaintext highlighter-rouge">zipWith</code> functions</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="o">$</span><span class="p">(</span><span class="n">genZipWith'</span> <span class="mi">20</span><span class="p">)</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>which will produce <code class="language-plaintext highlighter-rouge">zipWith1</code>, <code class="language-plaintext highlighter-rouge">zipWith2</code>, …, <code class="language-plaintext highlighter-rouge">zipWith19</code>, <code class="language-plaintext highlighter-rouge">zipWith20</code>.</p>
+
+<h2 id="ex-3-compile-time-input-validation">Ex 3: Compile-time Input Validation</h2>
+
+<p>Static input data is expected to be “correct” on a strongly typed programming language. 
+For example, assigning the decimal number <code class="language-plaintext highlighter-rouge">256</code> to a variable of type <code class="language-plaintext highlighter-rouge">Byte</code> is expected to fail at compile time.
+So, let’s try it on Haskell:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code>ghci&gt; :m +Data.Word
+ghci&gt; 256 :: Word8
+&lt;interactive&gt;:2:1: warning: [-Woverflowed-literals]
+    Literal 256 is out of the Word8 range 0..255
+0
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>Ops! Indeed, the code has compiled with an unexpected overflow. 
+The keen-eyed reader may be thinking that this bug could have been prevented with the appropriate GHC flags <code class="language-plaintext highlighter-rouge">-Wall</code> and <code class="language-plaintext highlighter-rouge">-Werror</code>.
+Here we present a more general approach to validate static input data from the user using <a href="https://hackage.haskell.org/package/template-haskell-2.17.0.0/docs/Language-Haskell-TH-Quote.html">quasiquoting</a>. This example can be easily adapted to all sorts of input data.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37</pre></td><td class="code"><pre class="highlight"><code><span class="n">word</span> <span class="o">::</span> <span class="kt">QuasiQuoter</span>
+<span class="n">word</span> <span class="o">=</span> <span class="kt">QuasiQuoter</span>
+  <span class="p">{</span> <span class="n">quoteExp</span>  <span class="o">=</span> <span class="n">parseWord</span>
+  <span class="p">,</span> <span class="n">quotePat</span>  <span class="o">=</span> <span class="n">notHandled</span> <span class="s">"patterns"</span>
+  <span class="p">,</span> <span class="n">quoteType</span> <span class="o">=</span> <span class="n">notHandled</span> <span class="s">"types"</span>
+  <span class="p">,</span> <span class="n">quoteDec</span>  <span class="o">=</span> <span class="n">notHandled</span> <span class="s">"declarations"</span>
+  <span class="p">}</span>
+  <span class="kr">where</span> <span class="n">notHandled</span> <span class="n">things</span> <span class="o">=</span> <span class="n">error</span> <span class="o">$</span>
+          <span class="n">things</span> <span class="o">++</span> <span class="s">" are not handled by the word quasiquoter."</span>
+
+<span class="n">parseWord</span> <span class="o">::</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">Q</span> <span class="kt">Exp</span>
+<span class="n">parseWord</span> <span class="p">(</span><span class="n">trim</span> <span class="o">-&gt;</span> <span class="n">str</span><span class="p">)</span> <span class="o">=</span>
+  <span class="kr">case</span> <span class="n">words</span> <span class="n">str</span> <span class="kr">of</span>
+    <span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">-&gt;</span>
+      <span class="kr">case</span> <span class="n">break</span> <span class="p">(</span><span class="o">==</span> <span class="sc">'u'</span><span class="p">)</span> <span class="n">w</span> <span class="kr">of</span>
+        <span class="p">(</span><span class="n">lit</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span>
+          <span class="kr">case</span> <span class="n">readMaybe</span> <span class="o">@</span><span class="kt">Integer</span> <span class="n">lit</span> <span class="kr">of</span>
+            <span class="kt">Just</span> <span class="n">int</span> <span class="o">-&gt;</span> <span class="kr">do</span>
+              <span class="n">when</span> <span class="p">(</span><span class="n">int</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">$</span> <span class="n">fail</span> <span class="s">"words are strictly positive"</span>
+              <span class="kr">case</span> <span class="n">size</span> <span class="kr">of</span>
+                <span class="s">"u8"</span> <span class="o">-&gt;</span> <span class="n">castWord</span> <span class="o">@</span><span class="kt">Word8</span> <span class="n">''Word8</span> <span class="n">int</span>
+                <span class="s">"u16"</span> <span class="o">-&gt;</span> <span class="n">castWord</span> <span class="o">@</span><span class="kt">Word16</span> <span class="n">''Word16</span> <span class="n">int</span>
+                <span class="s">"u32"</span> <span class="o">-&gt;</span> <span class="n">castWord</span> <span class="o">@</span><span class="kt">Word32</span> <span class="n">''Word32</span> <span class="n">int</span>
+                <span class="s">"u64"</span> <span class="o">-&gt;</span> <span class="n">castWord</span> <span class="o">@</span><span class="kt">Word64</span> <span class="n">''Word64</span> <span class="n">int</span>
+                <span class="kr">_</span> <span class="o">-&gt;</span> <span class="n">fail</span> <span class="p">(</span><span class="s">"size "</span> <span class="o">&lt;&gt;</span> <span class="n">size</span> <span class="o">&lt;&gt;</span> <span class="s">" is not one of {u8, u16, u32, u64}"</span><span class="p">)</span>
+            <span class="kt">Nothing</span> <span class="o">-&gt;</span> <span class="n">fail</span> <span class="p">(</span><span class="n">lit</span> <span class="o">&lt;&gt;</span> <span class="s">" cannot be parsed as Integer"</span><span class="p">)</span>
+
+    <span class="kr">_</span> <span class="o">-&gt;</span> <span class="n">fail</span> <span class="p">(</span><span class="s">"Unexpected word: "</span> <span class="o">&lt;&gt;</span> <span class="n">str</span><span class="p">)</span>
+  <span class="kr">where</span>
+    <span class="n">castWord</span> <span class="o">::</span> <span class="n">forall</span> <span class="n">a</span><span class="o">.</span> <span class="p">(</span><span class="kt">Show</span> <span class="n">a</span><span class="p">,</span> <span class="kt">Bounded</span> <span class="n">a</span><span class="p">,</span> <span class="kt">Integral</span> <span class="n">a</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="kt">Name</span> <span class="o">-&gt;</span> <span class="kt">Integer</span> <span class="o">-&gt;</span> <span class="kt">ExpQ</span>
+    <span class="n">castWord</span> <span class="n">ty</span> <span class="n">int</span>
+      <span class="o">|</span> <span class="n">int</span> <span class="o">&lt;=</span> <span class="n">fromIntegral</span> <span class="p">(</span><span class="n">maxBound</span> <span class="o">@</span><span class="n">a</span><span class="p">)</span> <span class="o">=</span> <span class="n">sigE</span> <span class="p">[</span><span class="o">|</span><span class="n">int</span><span class="o">|</span><span class="p">]</span> <span class="p">(</span><span class="n">conT</span> <span class="n">ty</span><span class="p">)</span>
+      <span class="o">|</span> <span class="n">otherwise</span> <span class="o">=</span> <span class="n">fail</span> <span class="p">(</span><span class="n">pprint</span> <span class="n">ty</span> <span class="o">&lt;&gt;</span> <span class="s">" is outside of bound: [0,"</span> <span class="o">&lt;&gt;</span> <span class="n">show</span> <span class="p">(</span><span class="n">maxBound</span> <span class="o">@</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="s">"]"</span><span class="p">)</span>
+
+<span class="n">trim</span> <span class="o">::</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">String</span>
+<span class="n">trim</span> <span class="o">=</span> <span class="n">f</span> <span class="o">.</span> <span class="n">f</span> <span class="kr">where</span>
+  <span class="n">f</span> <span class="o">=</span> <span class="n">reverse</span> <span class="o">.</span> <span class="n">dropWhile</span> <span class="n">isSpace</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">word</code> quasiquoter can validate static input data</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code>ghci&gt; [word| 255u8 |]
+255 :: Word8
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>and emit a compilation-time error if the data is not valid</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code>ghci&gt; [word| 256u8 |]
+&lt;interactive&gt;:315:7-15: error:
+    * GHC.Word.Word8 is outside of bound: [0,255]
+    * In the quasi-quotation: [word| 256u8 |]
+</code></pre></td></tr></tbody></table></div></div>
+
+<h2 id="ex-4-arbitrary-io-at-compile-time">Ex 4: Arbitrary IO at Compile Time</h2>
+
+<p>Running arbitrary IO on compile-time is one of the features of TH. This allows the user to make compilation dependant on external conditions such as the database schema, the current git branch or a local file content.</p>
+
+<p>In this last example, we are going to use <code class="language-plaintext highlighter-rouge">runIO</code> and <code class="language-plaintext highlighter-rouge">quasiquoting</code> to get static pictures from remote and local files at compile-time. Notice, this example has been simplified to avoid all the overhead of proper error handling.</p>
+
+<ol>
+  <li>Try to parse the input string as an <em>url</em></li>
+  <li>If it succeeds, request the content of the url as a bytestring</li>
+  <li>Otherwise, interpret the input string as a <em>file path</em> and read its content.</li>
+  <li>Decode the contents as a  <a href="https://hackage.haskell.org/package/JuicyPixels-3.3.6/docs/Codec-Picture.html#t:DynamicImage">DynamicImage</a></li>
+  <li>Lift the <code class="language-plaintext highlighter-rouge">DynamicImage</code></li>
+</ol>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35</pre></td><td class="code"><pre class="highlight"><code><span class="n">img</span> <span class="o">::</span> <span class="kt">QuasiQuoter</span>
+<span class="n">img</span> <span class="o">=</span> <span class="kt">QuasiQuoter</span> <span class="p">{</span>
+    <span class="n">quoteExp</span>  <span class="o">=</span> <span class="n">imgExpQ</span>
+  <span class="p">,</span> <span class="n">quotePat</span>  <span class="o">=</span> <span class="n">notHandled</span> <span class="s">"patterns"</span>
+  <span class="p">,</span> <span class="n">quoteType</span> <span class="o">=</span> <span class="n">notHandled</span> <span class="s">"types"</span>
+  <span class="p">,</span> <span class="n">quoteDec</span>  <span class="o">=</span> <span class="n">notHandled</span> <span class="s">"declarations"</span>
+  <span class="p">}</span>
+  <span class="kr">where</span> <span class="n">notHandled</span> <span class="n">things</span> <span class="o">=</span> <span class="n">error</span> <span class="o">$</span>
+          <span class="n">things</span> <span class="o">++</span> <span class="s">" are not handled by the img quasiquoter."</span>
+
+<span class="n">imgExpQ</span> <span class="o">::</span> <span class="kt">String</span> <span class="o">-&gt;</span> <span class="kt">ExpQ</span>
+<span class="n">imgExpQ</span> <span class="n">str</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="n">uri'</span> <span class="o">&lt;-</span> <span class="kt">URI</span><span class="o">.</span><span class="n">mkURI</span> <span class="p">(</span><span class="kt">T</span><span class="o">.</span><span class="n">pack</span> <span class="n">str</span><span class="p">)</span>
+  <span class="n">bs</span> <span class="o">&lt;-</span> <span class="n">runIO</span> <span class="o">$</span> <span class="kr">do</span>
+    <span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">dynImg</span><span class="p">)</span> <span class="o">&lt;-</span> 
+      <span class="kr">case</span> <span class="n">useURI</span> <span class="n">uri'</span> <span class="kr">of</span>
+        <span class="kt">Nothing</span> <span class="o">-&gt;</span> <span class="kt">BS</span><span class="o">.</span><span class="n">readFile</span> <span class="n">str</span>
+        <span class="kt">Just</span> <span class="p">(</span><span class="kt">Left</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="kr">_</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">requestBs</span> <span class="n">url</span>
+        <span class="kt">Just</span> <span class="p">(</span><span class="kt">Right</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="kr">_</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">requestBs</span> <span class="n">url</span>
+    <span class="n">either</span> <span class="n">fail</span> <span class="p">(</span><span class="n">pure</span> <span class="o">.</span> <span class="p">(</span><span class="n">bs</span><span class="p">,))</span> <span class="o">$</span> <span class="n">decodeImage</span> <span class="n">bs</span>
+  <span class="n">liftDynamicImage</span> <span class="n">bs</span>
+
+<span class="n">liftDynamicImage</span> <span class="o">::</span> <span class="kt">ByteString</span> <span class="o">-&gt;</span> <span class="kt">Q</span> <span class="kt">Exp</span>
+<span class="n">liftDynamicImage</span> <span class="n">bs</span> <span class="o">=</span> <span class="p">[</span><span class="o">|</span> <span class="n">either</span> <span class="n">error</span> <span class="n">id</span> <span class="p">(</span><span class="n">decodeImage</span> <span class="n">bs</span><span class="p">)</span> <span class="o">|</span><span class="p">]</span>
+
+<span class="n">requestBs</span> <span class="o">::</span> <span class="kt">Url</span> <span class="n">scheme</span> <span class="o">-&gt;</span> <span class="kt">IO</span> <span class="kt">ByteString</span>
+<span class="n">requestBs</span> <span class="n">url</span> <span class="o">=</span>
+  <span class="n">runReq</span> <span class="n">defaultHttpConfig</span> <span class="o">$</span> <span class="kr">do</span>
+    <span class="n">r</span> <span class="o">&lt;-</span> <span class="n">req</span>
+            <span class="kt">GET</span>
+            <span class="n">url</span>
+            <span class="kt">NoReqBody</span>
+            <span class="n">bsResponse</span>
+            <span class="n">mempty</span>
+    <span class="n">return</span> <span class="p">(</span><span class="n">responseBody</span> <span class="n">r</span><span class="p">)</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">img</code> quasiquoter can be used to load pictures as static data inside your binary</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="n">dynImg1</span> <span class="o">::</span> <span class="kt">DynamicImage</span>
+<span class="n">dynImg1</span> <span class="o">=</span> <span class="o">[</span><span class="n">img</span><span class="o">|</span>https://httpbin.org/image/jpeg<span class="o">|]</span>
+
+<span class="n">dynImg2</span> <span class="o">::</span> <span class="kt">DynamicImage</span>
+<span class="n">dynImg2</span> <span class="o">=</span> <span class="o">[</span><span class="n">img</span><span class="o">|</span>./resources/pig.png<span class="o">|]</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>During this blog post, we have seem some of the use cases of template haskell and how to implement them.
+We encourage the reader to use our examples to build new and more compelling use cases of template haskell and to share them with the community.</p>
+
+<p>We hope you enjoyed this post and don’t forget to share your own use cases for template haskell in the comments.</p>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/haskell" rel="tag"># haskell</a>
+          
+            
+            <a href="/tag/#/template-haskell" rel="tag"># template-haskell</a>
+          
+            
+            <a href="/tag/#/meta-programming" rel="tag"># meta-programming</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/haskell/2021/09/24/fizz-buzz/" rel="prev" title="The Fizz Buzz problem">
+                The Fizz Buzz problem <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/portrait.png"
+               alt="Arnau Abella" />
+          <p class="site-author-name" itemprop="name">Arnau Abella</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/monadplus" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/monadplus" target="_blank" title="twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  twitter
+                </a>
+              </span>
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="mailto:arnauabella@gmail.com" target="_blank" title="mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  mail
+                </a>
+              </span>
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="/assets/documents/cv.pdf" target="_blank" title="cv">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  cv
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#introduction"> <span class="nav-number">1</span> <span class="nav-text">Introduction</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#use-cases"> <span class="nav-number">2</span> <span class="nav-text">Use Cases</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#ex-1-type-class-derivation"> <span class="nav-number">2.1</span> <span class="nav-text">Ex 1: Type Class Derivation</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#ex-2-n-ary-function-generation"> <span class="nav-number">2.2</span> <span class="nav-text">Ex 2: N-ary Function Generation</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#ex-3-compile-time-input-validation"> <span class="nav-number">2.3</span> <span class="nav-text">Ex 3: Compile-time Input Validation</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#ex-4-arbitrary-io-at-compile-time"> <span class="nav-number">2.4</span> <span class="nav-text">Ex 4: Arbitrary IO at Compile Time</span> </a> </li> </ol> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#conclusion"> <span class="nav-number">3</span> <span class="nav-text">Conclusion</span> </a> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arnau Abella</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://monadplus.disqus.com/count.js" async></script>
+    
+
+    
+      
+      <script type="text/javascript">
+          var disqus_config = function () {
+              this.page.url = 'http://localhost:4000/haskell/2021/10/14/th/';
+              this.page.identifier = '/haskell/2021/10/14/th/';
+              this.page.title = 'Template Haskell — Use Cases';
+          };
+          var d = document, s = d.createElement('script');
+          s.src = 'https://monadplus.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', '' + +new Date());
+          (d.head || d.body).appendChild(s);
+      </script>
+      
+    
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
