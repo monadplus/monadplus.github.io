@@ -474,8 +474,9 @@ gitalk:
 
 # Google Analytics
 google_analytics:
-  tracking_id: UA-160258919-1
-  only_pageview: false
+  # tracking_id: UA-160258919-1
+  tracking_id: UA-160258919-2
+  only_pageview: true
 
 # Yandex Webmaster tools verification setting
 # See: https://webmaster.yandex.ru/
