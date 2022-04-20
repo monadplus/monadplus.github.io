@@ -1,0 +1,1623 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+  
+  
+    
+    
+  <script src="/assets/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/assets/lib/pace/pace-theme-center-simple.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="free monads,eDSL," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Monad+" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="In this post, we are going to solve a &quot;real world&quot; problem using free monads. First, we will see what are free monads and how they are useful to model domain specific languages. Later, we will solve a real interview exercise using free monads.">
+<meta name="keywords" content="free monads, eDSL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Free monads in the real world">
+<meta property="og:url" content="http://localhost:4000/haskell/2022/04/19/free-interpreter/">
+<meta property="og:site_name" content="Monad+">
+<meta property="og:description" content="In this post, we are going to solve a &quot;real world&quot; problem using free monads. First, we will see what are free monads and how they are useful to model domain specific languages. Later, we will solve a real interview exercise using free monads.">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Free monads in the real world">
+<meta name="twitter:description" content="In this post, we are going to solve a &quot;real world&quot; problem using free monads. First, we will see what are free monads and how they are useful to model domain specific languages. Later, we will solve a real interview exercise using free monads.">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":true,"scrollpercent":true},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>Free monads in the real world | Monad+</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', '{"tracking_id"=>"UA-160258919-1", "only_pageview"=>false}', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Monad+</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">A blog about functional programming</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/haskell/2022/04/19/free-interpreter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arnau Abella">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/images/portrait.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Monad+">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+          
+          
+            Free monads in the real world
+          
+        </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-04-19T00:00:00+02:00">
+                2022-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/haskell" itemprop="url" rel="index">
+                    <span itemprop="name">haskell</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/haskell/2022/04/19/free-interpreter/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="/haskell/2022/04/19/free-interpreter/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <p>After finishing my master’s degree, I applied to several companies I was interested in. During one of the selection processes, the interviewer asked me to do the following exercise:</p>
+
+<p><em>“Write a stack-based interpreted language (byte code) that includes: literals, arithmetic operations, variables, and control flow primitives. As a bonus, add asynchronous primitives such as fork and await.”</em></p>
+
+<p>Fortunately, I was already familiar with the assignment because I implemented a <a href="https://github.com/monadplus/CPP-lang">statically typed programming language</a> a year ago. Consequently, I decided to take this as a chance and do something than the rest of the candidates. Spoiler: free monads!</p>
+
+<h1 id="free-monads">Free monads</h1>
+
+<p>The concept of <em>free monad</em> comes from the field of category theory (CT). The formal definition requires a strong background in CT. So, to keep this pragmatic, we are going to consider the following definition:</p>
+
+<blockquote>
+  <p>For any functor $f$, there exists a uniquely determined monad called the <em>free monad</em> of the functor $f$.</p>
+</blockquote>
+
+<p>Probably this definition is still too general, so let’s see how this is translated into Haskell. In particular, we are going to base our work on the encoding of free monads of the haskell package <a href="https://hackage.haskell.org/package/free">free</a> by Edward Kmett et al. The definition is as follows:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="kr">data</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">=</span> <span class="kt">Pure</span> <span class="n">a</span> <span class="o">|</span> <span class="kt">Free</span> <span class="p">(</span><span class="n">f</span> <span class="p">(</span><span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span><span class="p">))</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Free f</code> is simply a stack of layers <code class="language-plaintext highlighter-rouge">f</code> on top of a value <code class="language-plaintext highlighter-rouge">a</code>.</p>
+
+<p>The interesting part about <code class="language-plaintext highlighter-rouge">Free f</code> is that <code class="language-plaintext highlighter-rouge">Free f</code> is a <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Control-Monad.html#t:Monad">monad</a> as long as <code class="language-plaintext highlighter-rouge">f</code> is a <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Functor.html#t:Functor">functor</a> (this is why it is called <em>free</em>, because you get a monad for free).</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code><span class="kr">instance</span> <span class="kt">Functor</span> <span class="n">f</span> <span class="o">=&gt;</span> <span class="kt">Monad</span> <span class="p">(</span><span class="kt">Free</span> <span class="n">f</span><span class="p">)</span> <span class="kr">where</span>
+  <span class="n">return</span> <span class="o">=</span> <span class="n">pure</span>
+  <span class="kt">Pure</span> <span class="n">a</span> <span class="o">&gt;&gt;=</span> <span class="n">f</span> <span class="o">=</span> <span class="n">f</span> <span class="n">a</span>
+  <span class="kt">Free</span> <span class="n">m</span> <span class="o">&gt;&gt;=</span> <span class="n">f</span> <span class="o">=</span> <span class="kt">Free</span> <span class="p">((</span><span class="o">&gt;&gt;=</span> <span class="n">f</span><span class="p">)</span> <span class="o">&lt;$&gt;</span> <span class="n">m</span><span class="p">)</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>This will allow us to compose free actions by embedding new layers on the bottom of the stack of layers, which is essential to model domain specific languages.</p>
+
+<p>In practise, the user builds a free monad stacking layers of their domain specific language modelled as a functor. Later, it executes <code class="language-plaintext highlighter-rouge">iter</code> (or its corresponding applicative and monadic version) to interpret and collapse each layer into a single (effectful) value.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="n">iter</span> <span class="o">::</span> <span class="kt">Functor</span> <span class="n">f</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">a</span>
+<span class="n">iterA</span> <span class="o">::</span> <span class="p">(</span><span class="kt">Applicative</span> <span class="n">p</span><span class="p">,</span> <span class="kt">Functor</span> <span class="n">f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="p">(</span><span class="n">p</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">p</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">p</span> <span class="n">a</span> 
+<span class="n">iterM</span> <span class="o">::</span> <span class="p">(</span><span class="kt">Monad</span> <span class="n">m</span><span class="p">,</span> <span class="kt">Functor</span> <span class="n">f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="p">(</span><span class="n">m</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">m</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">m</span> <span class="n">a</span> 
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>In the next section, we will see how to put that into practise.</p>
+
+<h1 id="solving-the-assignment">Solving the assignment</h1>
+
+<p>When modeling an embedded domain specific language (eDSL) using free monads, you usually divide the problem in two parts:</p>
+<ol>
+  <li>Define your language.</li>
+  <li>Define the interpreter for your language.</li>
+</ol>
+
+<h2 id="defining-our-edsl">Defining our eDSL</h2>
+
+<p>First, we need to define our language. We are free to model any kind of language, but the type that represents our language must be a functor. Otherwise, our language will not be able to be composed using bind <code class="language-plaintext highlighter-rouge">(=&lt;&lt;)</code>.</p>
+
+<p>Here is the sum type representing our byte code language:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26</pre></td><td class="code"><pre class="highlight"><code><span class="kr">type</span> <span class="kt">ByteCode</span> <span class="o">=</span> <span class="kt">Free</span> <span class="kt">ByteCodeF</span>
+
+<span class="kr">data</span> <span class="kt">ByteCodeF</span> <span class="n">next</span>
+  <span class="o">=</span> <span class="kt">Lit</span> <span class="kt">Value</span> <span class="n">next</span>
+  <span class="o">|</span> <span class="kt">Load</span> <span class="kt">Var</span> <span class="n">next</span>
+  <span class="o">|</span> <span class="kt">Write</span> <span class="kt">Var</span> <span class="n">next</span>
+  <span class="o">|</span> <span class="kt">BinaryOp</span> <span class="kt">OpCode</span> <span class="n">next</span>
+  <span class="o">|</span> <span class="kt">Loop</span> <span class="p">(</span><span class="kt">ByteCode</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">(</span><span class="kt">ByteCode</span> <span class="nb">()</span><span class="p">)</span> <span class="n">next</span>
+  <span class="o">|</span> <span class="kt">Ret</span> <span class="p">(</span><span class="kt">Value</span> <span class="o">-&gt;</span> <span class="n">next</span><span class="p">)</span>
+  <span class="o">|</span> <span class="kt">NewChan</span> <span class="p">(</span><span class="kt">Channel</span> <span class="o">-&gt;</span> <span class="n">next</span><span class="p">)</span>
+  <span class="o">|</span> <span class="kt">Send</span> <span class="kt">Channel</span> <span class="n">next</span>
+  <span class="o">|</span> <span class="kt">Recv</span> <span class="kt">Channel</span> <span class="n">next</span>
+  <span class="o">|</span> <span class="kt">Fork</span> <span class="p">(</span><span class="kt">ByteCode</span> <span class="nb">()</span><span class="p">)</span> <span class="p">(</span><span class="kt">Future</span> <span class="nb">()</span> <span class="o">-&gt;</span> <span class="n">next</span><span class="p">)</span>
+  <span class="o">|</span> <span class="kt">Await</span> <span class="p">(</span><span class="kt">Future</span> <span class="nb">()</span><span class="p">)</span> <span class="n">next</span>
+  <span class="kr">deriving</span> <span class="n">stock</span> <span class="p">(</span><span class="kt">Functor</span><span class="p">)</span>
+
+<span class="kr">data</span> <span class="kt">Value</span>
+  <span class="o">=</span> <span class="kt">B</span> <span class="kt">Bool</span>
+  <span class="o">|</span> <span class="kt">I</span> <span class="kt">Integer</span>
+  <span class="kr">deriving</span> <span class="n">stock</span> <span class="p">(</span><span class="kt">Eq</span><span class="p">,</span> <span class="kt">Show</span><span class="p">,</span> <span class="kt">Ord</span><span class="p">)</span>
+
+<span class="kr">newtype</span> <span class="kt">Chan</span> <span class="n">a</span> <span class="o">=</span> <span class="kt">Chan</span> <span class="p">{</span> <span class="n">getChan</span> <span class="o">::</span> <span class="kt">MVar</span> <span class="n">a</span><span class="p">}</span>
+  <span class="kr">deriving</span> <span class="kr">newtype</span> <span class="p">(</span><span class="kt">Eq</span><span class="p">)</span>
+
+<span class="kr">data</span> <span class="kt">Future</span> <span class="n">a</span> <span class="kr">where</span>
+  <span class="kt">Future</span> <span class="o">::</span> <span class="kt">Exception</span> <span class="n">e</span> <span class="o">=&gt;</span> <span class="kt">Async</span> <span class="p">(</span><span class="kt">Either</span> <span class="n">e</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Future</span> <span class="n">a</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Lit</code> instruction to instantiate literals (integer and boolean values).</li>
+  <li><code class="language-plaintext highlighter-rouge">Load</code>/<code class="language-plaintext highlighter-rouge">Write</code> instructions to load and write variables, respectively.</li>
+  <li><code class="language-plaintext highlighter-rouge">BinaryOp</code> instruction to apply binary operations (+, *, &lt;) on the top values of the stack.</li>
+  <li><code class="language-plaintext highlighter-rouge">Loop</code> instruction to execute a set of instructions iteratively based on a certain condition.</li>
+  <li><code class="language-plaintext highlighter-rouge">Ret</code> instruction to stop the program and return the value on top of the stack.</li>
+  <li><code class="language-plaintext highlighter-rouge">Fork</code>/<code class="language-plaintext highlighter-rouge">Await</code> instructions to start and await an asynchronous program, respectively.</li>
+  <li><code class="language-plaintext highlighter-rouge">NewChan</code>/<code class="language-plaintext highlighter-rouge">Send</code>/<code class="language-plaintext highlighter-rouge">Recv</code> instructions to create a new asynchronous channel, send and receive a value through the channel, respectively. This channel allow to independent asynchronous programs to communicate.</li>
+</ul>
+
+<p>The careful reader may have notice that our type <code class="language-plaintext highlighter-rouge">ByteCodeF</code> has a type parameter <code class="language-plaintext highlighter-rouge">next :: Type</code>. This type parameter is required for <code class="language-plaintext highlighter-rouge">ByteCodeF</code> to be a functor. We can think of <code class="language-plaintext highlighter-rouge">next</code> as the next instruction in our program. In fact, when we interpret the <code class="language-plaintext highlighter-rouge">ByteCode</code> free monad, next will be replaced by the (evaluated) next instruction of our program.</p>
+
+<p>Next, for each constructor of our <code class="language-plaintext highlighter-rouge">ByteCodeF</code>, we need a function that lifts <code class="language-plaintext highlighter-rouge">ByteCodeF</code> into <code class="language-plaintext highlighter-rouge">ByteCode</code>. For example, here is the definition of that function for <code class="language-plaintext highlighter-rouge">Lit</code>:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="n">lit</span> <span class="o">::</span> <span class="kt">Value</span> <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
+<span class="n">lit</span> <span class="n">v</span> <span class="o">=</span> <span class="kt">Free</span> <span class="p">(</span><span class="kt">Lit</span> <span class="n">v</span> <span class="p">(</span><span class="kt">Pure</span> <span class="nb">()</span><span class="p">))</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>Implementing this for each constructor is tedious and error prone. This problem can be solved with metaprogramming. In particular, with <a href="https://hackage.haskell.org/package/template-haskell-2.17.0.0/docs/Language-Haskell-TH.html">template haskell</a> (for an introduction to template haskell see my <a href="http://localhost:4000/haskell/2021/10/14/th">blog post</a>). Fortunately, this is already implemented in <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free-TH.html">Control.Monad.Free.TH</a>.</p>
+
+<p>Therefore, we are going to use <code class="language-plaintext highlighter-rouge">makeFree</code> to automatically derive all these free monadic actions</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="o">$</span><span class="p">(</span><span class="n">makeFree</span> <span class="n">''ByteCodeF</span><span class="p">)</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>which generates the following code</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9</pre></td><td class="code"><pre class="highlight"><code><span class="n">lit</span>      <span class="o">::</span> <span class="kt">Value</span>                         <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
+<span class="n">load</span>     <span class="o">::</span> <span class="kt">Var</span>                           <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
+<span class="n">write</span>    <span class="o">::</span> <span class="kt">Var</span>                           <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
+<span class="n">loop</span>     <span class="o">::</span> <span class="kt">ByteCode</span> <span class="kt">Value</span> <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span> <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
+<span class="n">newChan</span>  <span class="o">::</span>                                  <span class="kt">ByteCode</span> <span class="kt">Channel</span>
+<span class="n">send</span>     <span class="o">::</span> <span class="kt">Channel</span>                       <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
+<span class="n">recv</span>     <span class="o">::</span> <span class="kt">Channel</span>                       <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
+<span class="n">fork</span>     <span class="o">::</span> <span class="kt">ByteCode</span> <span class="nb">()</span>                   <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="p">(</span><span class="kt">Async</span> <span class="nb">()</span><span class="p">)</span>
+<span class="n">await</span>    <span class="o">::</span> <span class="kt">Async</span> <span class="nb">()</span>                      <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<blockquote>
+  <p>The actual signatures use <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#t:MonadFree">MonadFree</a> which is an mtl-style class that allow us to compose <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Trans-Free.html#t:FreeT">FreeT</a> with other monad transformers. We were able to monomorphize the return value <code class="language-plaintext highlighter-rouge">MonadFree f m =&gt; m ~ Free ByteCodeF</code> thanks to the instance <code class="language-plaintext highlighter-rouge">Functor f =&gt; MonadFree f (Free f)</code>.</p>
+</blockquote>
+
+<p>Once we have the basic building blocks of our language, we can start building more complex primitives using monadic composition!</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22</pre></td><td class="code"><pre class="highlight"><code><span class="n">loopN</span> <span class="o">::</span> <span class="kt">Integer</span> <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
+<span class="n">loopN</span> <span class="n">until</span> <span class="o">=</span> <span class="kr">do</span>
+
+  <span class="n">litI</span> <span class="n">until</span>
+  <span class="n">write</span> <span class="n">n</span>
+  <span class="n">litI</span> <span class="mi">1</span>
+  <span class="n">write</span> <span class="n">i</span>
+  <span class="n">loop</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span> <span class="o">++</span><span class="p">)</span>
+
+  <span class="kr">where</span>
+  
+      <span class="p">(</span><span class="o">&lt;</span><span class="p">)</span> <span class="n">i</span> <span class="n">n</span> <span class="o">=</span> <span class="kr">do</span>
+      <span class="n">load</span> <span class="n">n</span>
+      <span class="n">load</span> <span class="n">i</span>
+      <span class="n">lessThan</span>
+      <span class="n">ret</span>
+  
+      <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="n">i</span> <span class="o">=</span> <span class="kr">do</span>
+      <span class="n">litI</span> <span class="mi">1</span>
+      <span class="n">load</span> <span class="n">i</span>
+      <span class="n">add</span>
+      <span class="n">write</span> <span class="n">i</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h2 id="interpreting-our-edsl">Interpreting our eDSL</h2>
+
+<p>Now that we have the building blocks to construct our domain specific programs, it is only remaining to implement an interpreter to evaluate this embedded DSL in our host language Haskell.</p>
+
+<p>The interpreter is usually implemented using <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#v:iterM">iterM</a>:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="n">iterM</span> <span class="o">::</span> <span class="p">(</span><span class="kt">Monad</span> <span class="n">m</span><span class="p">,</span> <span class="kt">Functor</span> <span class="n">f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="p">(</span><span class="n">m</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">m</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">m</span> <span class="n">a</span>
+<span class="n">iterM</span> <span class="kr">_</span>   <span class="p">(</span><span class="kt">Pure</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">return</span> <span class="n">x</span>
+<span class="n">iterM</span> <span class="n">phi</span> <span class="p">(</span><span class="kt">Free</span> <span class="n">f</span><span class="p">)</span> <span class="o">=</span> <span class="n">phi</span> <span class="p">(</span><span class="n">iterM</span> <span class="n">phi</span> <span class="o">&lt;$&gt;</span> <span class="n">f</span><span class="p">)</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">iterM</code> allow us to collapse our <code class="language-plaintext highlighter-rouge">Free f</code> into a monadic value <code class="language-plaintext highlighter-rouge">m a</code> by providing a function <code class="language-plaintext highlighter-rouge">f (m a) -&gt; m a</code> (usually called an <em>algebra</em>) that operates on a single layer of our free monad. If you are familiar with recursion schemes, <code class="language-plaintext highlighter-rouge">iterm</code> is a specialization of <a href="https://hackage.haskell.org/package/recursion-schemes-5.2.2.2/docs/Data-Functor-Foldable.html#v:cataA">cataA</a>.</p>
+
+<p>This may sound confusing at first, but it is easier than it looks like. So, let’s see how it would look like in our example. First of all, we need to choose the monadic value <code class="language-plaintext highlighter-rouge">m</code>. For our interpreted language, we choose <code class="language-plaintext highlighter-rouge">m ~ Interpreter</code></p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14</pre></td><td class="code"><pre class="highlight"><code><span class="kr">newtype</span> <span class="kt">Interpreter</span> <span class="n">a</span> <span class="o">=</span> <span class="kt">Interpreter</span> 
+  <span class="p">{</span> <span class="n">runInterpreter</span> <span class="o">::</span> <span class="kt">StateT</span> <span class="kt">Ctx</span> <span class="p">(</span><span class="kt">ExceptT</span> <span class="kt">Err</span> <span class="kt">IO</span><span class="p">)</span> <span class="n">a</span> <span class="p">}</span>
+
+<span class="kr">data</span> <span class="kt">Ctx</span> <span class="o">=</span> <span class="kt">Ctx</span>
+  <span class="p">{</span> <span class="n">stack</span> <span class="o">::</span> <span class="p">[</span><span class="kt">Value</span><span class="p">],</span>
+    <span class="n">variables</span> <span class="o">::</span> <span class="kt">Map</span> <span class="kt">Var</span> <span class="kt">Value</span>
+  <span class="p">}</span>
+
+<span class="kr">data</span> <span class="kt">Err</span>
+  <span class="o">=</span> <span class="kt">VariableNotFound</span> <span class="kt">Var</span>
+  <span class="o">|</span> <span class="kt">StackIsEmpty</span>
+  <span class="o">|</span> <span class="kt">BinaryOpExpectedTwoOperands</span>
+  <span class="o">|</span> <span class="kt">AsyncException</span> <span class="kt">Text</span>
+  <span class="o">|</span> <span class="kt">WhoNeedsTypes</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>where <code class="language-plaintext highlighter-rouge">Ctx</code> is the current context of our program i.e. the state of the stack and the memory registers.</p>
+
+<p>Then, we specialize <code class="language-plaintext highlighter-rouge">iterM</code> to our example</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="c1">--       &lt;---------------- algebra -----------------&gt;</span>
+<span class="n">iterm</span> <span class="o">::</span> <span class="p">(</span><span class="kt">ByteCodeF</span> <span class="p">(</span><span class="kt">Interpreter</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="n">a</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>The last step and usually the most difficult one is to implement the <em>algebra</em> of our DSL</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45<br/>46<br/>47<br/>48<br/>49<br/>50<br/>51<br/>52<br/>53<br/>54<br/>55<br/>56<br/>57<br/>58<br/>59<br/>60<br/>61<br/>62<br/>63<br/>64<br/>65<br/>66<br/>67<br/>68<br/>69<br/>70<br/>71<br/>72</pre></td><td class="code"><pre class="highlight"><code><span class="n">algebra</span> <span class="o">::</span> <span class="kt">ByteCodeF</span> <span class="p">(</span><span class="kt">Interpreter</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="n">a</span>
+<span class="n">algebra</span> <span class="o">=</span> <span class="nf">\</span><span class="kr">case</span>
+  <span class="kt">Ret</span> <span class="n">f</span> <span class="o">-&gt;</span> <span class="n">popI</span> <span class="o">&gt;&gt;=</span> <span class="n">f</span>
+  <span class="kt">Lit</span> <span class="n">i</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">pushI</span> <span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="n">k</span>
+  <span class="kt">Load</span> <span class="n">var</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">loadI</span> <span class="n">var</span> <span class="o">&gt;&gt;=</span> <span class="n">pushI</span> <span class="o">&gt;&gt;</span> <span class="n">k</span>
+  <span class="kt">Write</span> <span class="n">var</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">popI</span> <span class="o">&gt;&gt;=</span> <span class="n">storeI</span> <span class="n">var</span> <span class="o">&gt;&gt;</span> <span class="n">k</span>
+  <span class="kt">BinaryOp</span> <span class="n">op</span> <span class="n">k</span> <span class="o">-&gt;</span>
+    <span class="kr">do</span>
+      <span class="n">catchError</span>
+        <span class="p">(</span><span class="n">liftA2</span> <span class="p">(</span><span class="n">applyOp</span> <span class="n">op</span><span class="p">)</span> <span class="n">popI</span> <span class="n">popI</span> <span class="o">&gt;&gt;=</span> <span class="n">either</span> <span class="n">throwError</span> <span class="n">pushI</span><span class="p">)</span>
+        <span class="p">(</span> <span class="nf">\</span><span class="kr">case</span>
+            <span class="kt">StackIsEmpty</span> <span class="o">-&gt;</span> <span class="n">throwError</span> <span class="kt">BinaryOpExpectedTwoOperands</span>
+            <span class="n">e</span> <span class="o">-&gt;</span> <span class="n">throwError</span> <span class="n">e</span>
+        <span class="p">)</span>
+      <span class="o">&gt;&gt;</span> <span class="n">k</span>
+  <span class="kt">Loop</span> <span class="n">cond</span> <span class="n">expr</span> <span class="n">k</span> <span class="o">-&gt;</span>
+    <span class="n">fix</span> <span class="o">$</span> <span class="nf">\</span><span class="n">rec</span> <span class="o">-&gt;</span> <span class="kr">do</span>
+      <span class="n">b</span> <span class="o">&lt;-</span> <span class="n">interpret</span> <span class="n">cond</span>
+      <span class="kr">if</span> <span class="n">b</span>
+        <span class="kr">then</span> <span class="n">interpret</span> <span class="n">expr</span> <span class="o">&gt;&gt;</span> <span class="n">rec</span>
+        <span class="kr">else</span> <span class="n">k</span>
+  <span class="kt">NewChan</span> <span class="n">f</span> <span class="o">-&gt;</span>
+    <span class="n">liftIO</span> <span class="n">getChan</span> <span class="o">&gt;&gt;=</span> <span class="n">f</span>
+  <span class="kt">Send</span> <span class="n">chan</span> <span class="n">k</span> <span class="o">-&gt;</span>
+    <span class="n">popI</span> <span class="o">&gt;&gt;=</span> <span class="p">(</span><span class="n">liftIO</span> <span class="o">.</span> <span class="n">sendChan</span> <span class="n">chan</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">k</span>
+  <span class="kt">Recv</span> <span class="n">chan</span> <span class="n">k</span> <span class="o">-&gt;</span>
+    <span class="n">liftIO</span> <span class="p">(</span><span class="n">recvChan</span> <span class="n">chan</span><span class="p">)</span> <span class="o">&gt;&gt;=</span> <span class="n">pushI</span> <span class="o">&gt;&gt;</span> <span class="n">k</span>
+  <span class="kt">Fork</span> <span class="n">branch</span> <span class="n">k</span> <span class="o">-&gt;</span>
+    <span class="n">future</span> <span class="n">branch</span> <span class="o">&gt;&gt;=</span> <span class="n">k</span>
+  <span class="kt">Await</span> <span class="p">(</span><span class="kt">Future</span> <span class="n">async'</span><span class="p">)</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="kr">do</span>
+    <span class="n">ea</span> <span class="o">&lt;-</span> <span class="n">liftIO</span> <span class="o">$</span> <span class="n">waitCatch</span> <span class="n">async'</span>
+    <span class="kr">case</span> <span class="n">ea</span> <span class="kr">of</span>
+      <span class="kt">Left</span> <span class="p">(</span><span class="kt">SomeException</span> <span class="n">ex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">throwError</span> <span class="p">(</span><span class="kt">AsyncException</span> <span class="p">(</span><span class="kt">T</span><span class="o">.</span><span class="n">pack</span> <span class="o">$</span> <span class="n">show</span> <span class="n">ex</span><span class="p">))</span>
+      <span class="kt">Right</span> <span class="p">(</span><span class="kt">Left</span> <span class="n">ex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">throwError</span> <span class="p">(</span><span class="kt">AsyncException</span> <span class="p">(</span><span class="kt">T</span><span class="o">.</span><span class="n">pack</span> <span class="o">$</span> <span class="n">show</span> <span class="n">ex</span><span class="p">))</span>
+      <span class="kt">Right</span> <span class="n">_r</span> <span class="o">-&gt;</span> <span class="n">k</span>
+
+<span class="n">popI</span> <span class="o">::</span> <span class="kt">Interpreter</span> <span class="kt">Value</span>
+<span class="n">popI</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="kt">Ctx</span> <span class="p">{</span><span class="o">..</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="n">get</span>
+  <span class="kr">case</span> <span class="n">stack</span> <span class="kr">of</span>
+    <span class="kt">[]</span> <span class="o">-&gt;</span> <span class="n">throwError</span> <span class="kt">StackIsEmpty</span>
+    <span class="p">(</span><span class="n">x</span> <span class="o">:</span> <span class="n">xs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">put</span> <span class="kt">Ctx</span> <span class="p">{</span><span class="n">stack</span> <span class="o">=</span> <span class="n">xs</span><span class="p">,</span> <span class="o">..</span><span class="p">}</span> <span class="o">&gt;&gt;</span> <span class="n">return</span> <span class="n">x</span>
+
+<span class="n">pushI</span> <span class="o">::</span> <span class="kt">Value</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="nb">()</span>
+<span class="n">pushI</span> <span class="n">i</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="kt">Ctx</span> <span class="p">{</span><span class="o">..</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="n">get</span>
+  <span class="n">put</span> <span class="kt">Ctx</span> <span class="p">{</span><span class="n">stack</span> <span class="o">=</span> <span class="n">i</span> <span class="o">:</span> <span class="n">stack</span><span class="p">,</span> <span class="o">..</span><span class="p">}</span>
+
+<span class="n">loadI</span> <span class="o">::</span> <span class="kt">Var</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="kt">Value</span>
+<span class="n">loadI</span> <span class="n">var</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="kt">Ctx</span> <span class="p">{</span><span class="o">..</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="n">get</span>
+  <span class="kr">case</span> <span class="kt">M</span><span class="o">.</span><span class="n">lookup</span> <span class="n">var</span> <span class="n">variables</span> <span class="kr">of</span>
+    <span class="kt">Nothing</span> <span class="o">-&gt;</span> <span class="n">throwError</span> <span class="o">$</span> <span class="kt">VariableNotFound</span> <span class="n">var</span>
+    <span class="kt">Just</span> <span class="n">v</span> <span class="o">-&gt;</span> <span class="n">return</span> <span class="n">v</span>
+
+<span class="n">storeI</span> <span class="o">::</span> <span class="kt">Var</span> <span class="o">-&gt;</span> <span class="kt">Value</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="nb">()</span>
+<span class="n">storeI</span> <span class="n">var</span> <span class="n">v</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="kt">Ctx</span> <span class="p">{</span><span class="o">..</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="n">get</span>
+  <span class="kr">let</span> <span class="n">variables'</span> <span class="o">=</span> <span class="kt">M</span><span class="o">.</span><span class="n">insert</span> <span class="n">var</span> <span class="n">v</span> <span class="n">variables</span>
+  <span class="n">put</span> <span class="kt">Ctx</span> <span class="p">{</span><span class="n">variables</span> <span class="o">=</span> <span class="n">variables'</span><span class="p">,</span> <span class="o">..</span><span class="p">}</span>
+
+<span class="n">applyOp</span> <span class="o">::</span> <span class="kt">OpCode</span> <span class="o">-&gt;</span> <span class="kt">Value</span> <span class="o">-&gt;</span> <span class="kt">Value</span> <span class="o">-&gt;</span> <span class="kt">Either</span> <span class="kt">Err</span> <span class="kt">Value</span>
+<span class="n">applyOp</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i1</span><span class="p">)</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i2</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Right</span> <span class="o">$</span> <span class="kt">I</span> <span class="p">(</span><span class="n">i1</span> <span class="o">+</span> <span class="n">i2</span><span class="p">)</span>
+<span class="n">applyOp</span> <span class="kt">Multiply</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i1</span><span class="p">)</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i2</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Right</span> <span class="o">$</span> <span class="kt">I</span> <span class="p">(</span><span class="n">i1</span> <span class="o">*</span> <span class="n">i2</span><span class="p">)</span>
+<span class="n">applyOp</span> <span class="kt">LessThan</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i1</span><span class="p">)</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i2</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Right</span> <span class="o">$</span> <span class="kt">B</span> <span class="p">(</span><span class="n">i1</span> <span class="o">&lt;</span> <span class="n">i2</span><span class="p">)</span>
+<span class="n">applyOp</span> <span class="kr">_</span> <span class="kr">_</span> <span class="kr">_</span> <span class="o">=</span> <span class="kt">Left</span> <span class="kt">WhoNeedsTypes</span>
+
+<span class="n">future</span> <span class="o">::</span> <span class="kt">ByteCode</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="p">(</span><span class="kt">Future</span> <span class="n">a</span><span class="p">)</span>
+<span class="n">future</span> <span class="n">code</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="n">ctx</span> <span class="o">&lt;-</span> <span class="n">get</span>
+  <span class="n">async'</span> <span class="o">&lt;-</span> <span class="n">liftIO</span> <span class="o">.</span> <span class="n">async</span> <span class="o">.</span> <span class="n">runExceptT</span> <span class="o">$</span> <span class="n">evalStateT</span> <span class="p">(</span><span class="n">runInterpreter</span> <span class="p">(</span><span class="n">interpret</span> <span class="n">code</span><span class="p">))</span> <span class="n">ctx</span>
+  <span class="n">return</span> <span class="o">$</span> <span class="kt">Future</span> <span class="n">async'</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>Finally, we combine <code class="language-plaintext highlighter-rouge">iterM</code> and <code class="language-plaintext highlighter-rouge">algebra</code> to obtain</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="n">interpret</span> <span class="o">::</span> <span class="kt">ByteCode</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="n">a</span>
+<span class="n">interpret</span> <span class="o">=</span> <span class="n">iterM</span> <span class="n">algebra</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>which allow us to <em>interpret</em> our embedded language in our host language. The result of <code class="language-plaintext highlighter-rouge">interpret</code> can be composed with other effectful programs and it can also be evaluated using <code class="language-plaintext highlighter-rouge">runByteCode</code>:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="n">runByteCode</span> <span class="o">::</span> <span class="kt">ByteCode</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">Either</span> <span class="kt">Err</span> <span class="n">a</span>
+<span class="n">runByteCode</span> <span class="o">=</span> <span class="n">unsafePerformIO</span> <span class="o">.</span> <span class="n">runExceptT</span> <span class="o">.</span> <span class="n">flip</span> <span class="n">evalStateT</span> <span class="n">emptyCtx</span> <span class="o">.</span> <span class="n">runInterpreter</span> <span class="o">.</span> <span class="n">interpret</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h2 id="all-together">All together</h2>
+
+<p>So far, we have built the following components:</p>
+<ol>
+  <li>An embedded stack-based language in Haskell with primitives like: <code class="language-plaintext highlighter-rouge">lit</code>, <code class="language-plaintext highlighter-rouge">load</code>, <code class="language-plaintext highlighter-rouge">write</code>, <code class="language-plaintext highlighter-rouge">loop</code> …</li>
+  <li>An interpreter for that language: <code class="language-plaintext highlighter-rouge">interpret</code> and <code class="language-plaintext highlighter-rouge">runByteCode</code>.</li>
+</ol>
+
+<p>Now that we have all the ingredients to create embedded stack-based programs and interpret them, we can put this into practise.</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22</pre></td><td class="code"><pre class="highlight"><code><span class="n">program</span> <span class="o">::</span> <span class="kt">ByteCode</span> <span class="kt">Value</span>
+<span class="n">program</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="n">chan1</span> <span class="o">&lt;-</span> <span class="n">newChan</span>
+  <span class="n">chan2</span> <span class="o">&lt;-</span> <span class="n">newChan</span>
+  <span class="kr">_</span> <span class="o">&lt;-</span> <span class="n">fork</span> <span class="o">$</span> <span class="kr">do</span>
+    <span class="n">loopN</span> <span class="mi">100000</span>
+    <span class="n">litI</span> <span class="mi">1</span>
+    <span class="n">send</span> <span class="n">chan1</span>
+  <span class="kr">_</span> <span class="o">&lt;-</span> <span class="n">fork</span> <span class="o">$</span> <span class="kr">do</span>
+    <span class="n">loopN</span> <span class="mi">100000</span>
+    <span class="n">litI</span> <span class="mi">1</span>
+    <span class="n">send</span> <span class="n">chan2</span>
+  <span class="n">loopN</span> <span class="mi">10</span>
+  <span class="n">recv</span> <span class="n">chan1</span>
+  <span class="n">recv</span> <span class="n">chan2</span>
+  <span class="n">add</span>
+  <span class="n">ret</span>
+
+<span class="n">main</span> <span class="o">::</span> <span class="kt">IO</span> <span class="nb">()</span>
+<span class="n">main</span> <span class="o">=</span> <span class="kr">case</span> <span class="n">runByteCode</span> <span class="n">program</span> <span class="kr">of</span>
+  <span class="kt">Left</span> <span class="n">err</span> <span class="o">-&gt;</span> <span class="n">throw</span> <span class="n">err</span>
+  <span class="kt">Right</span> <span class="n">res</span> <span class="o">-&gt;</span> <span class="n">putStrLn</span> <span class="o">$</span> <span class="s">"Result = "</span> <span class="o">&lt;&gt;</span> <span class="n">show</span> <span class="n">res</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>The following <code class="language-plaintext highlighter-rouge">program</code> creates two asynchronous tasks that after a period of time, return the integer <code class="language-plaintext highlighter-rouge">1</code> through an asynchronous channel. The main program waits for these two asynchronous tasks to finish and outputs the sum of the results of the asynchronous tasks.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>In this post, we have introduced free monads and how they can be used to implement embedded domain specific languages. In particular, we have seen how to embed a stack-based language in Haskell. To see other examples of domain specific languages, we refer the reader to the <a href="https://github.com/ekmett/free/tree/master/examples">examples of the free package</a>.</p>
+
+<p>This post only covered a half of the <a href="https://hackage.haskell.org/package/free">free</a> package. In the next post of this series, we’ll explore the other half: church encoding, applicative free, cofree…</p>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/free%20monads" rel="tag"># free monads</a>
+          
+            
+            <a href="/tag/#/eDSL" rel="tag"># eDSL</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/haskell/2021/10/14/th/" rel="prev" title="Template Haskell; Use Cases">
+                Template Haskell; Use Cases <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/portrait.png"
+               alt="Arnau Abella" />
+          <p class="site-author-name" itemprop="name">Arnau Abella</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/monadplus" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/monadplus" target="_blank" title="twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  twitter
+                </a>
+              </span>
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="mailto:arnau.abella@monadplus.pro" target="_blank" title="mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  mail
+                </a>
+              </span>
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="/assets/documents/cv.pdf" target="_blank" title="cv">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  cv
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#free-monads"> <span class="nav-number">1</span> <span class="nav-text">Free monads</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#solving-the-assignment"> <span class="nav-number">2</span> <span class="nav-text">Solving the assignment</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#defining-our-edsl"> <span class="nav-number">2.1</span> <span class="nav-text">Defining our eDSL</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#interpreting-our-edsl"> <span class="nav-number">2.2</span> <span class="nav-text">Interpreting our eDSL</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#all-together"> <span class="nav-number">2.3</span> <span class="nav-text">All together</span> </a> </li> </ol> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#conclusion"> <span class="nav-number">3</span> <span class="nav-text">Conclusion</span> </a> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arnau Abella</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://monadplus.disqus.com/count.js" async></script>
+    
+
+    
+      
+      <script type="text/javascript">
+          var disqus_config = function () {
+              this.page.url = 'http://localhost:4000/haskell/2022/04/19/free-interpreter/';
+              this.page.identifier = '/haskell/2022/04/19/free-interpreter/';
+              this.page.title = 'Free monads in the real world';
+          };
+          var d = document, s = d.createElement('script');
+          s.src = 'https://monadplus.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', '' + +new Date());
+          (d.head || d.body).appendChild(s);
+      </script>
+      
+    
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('-1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+         processEscapes: true,
+         skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+       }
+     });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
+
