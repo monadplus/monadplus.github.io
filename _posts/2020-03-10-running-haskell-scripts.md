@@ -5,8 +5,6 @@ categories:
  - haskell
  - nix
 tags:
- - haskell
- - nix
 ---
 
 # Introduction
