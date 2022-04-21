@@ -653,7 +653,7 @@
 
 <p>The last step and usually the most difficult one is to implement the <em>algebra</em> of our DSL</p>
 
-<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45<br/>46<br/>47<br/>48<br/>49<br/>50<br/>51<br/>52<br/>53<br/>54<br/>55<br/>56<br/>57<br/>58<br/>59<br/>60<br/>61<br/>62<br/>63<br/>64<br/>65<br/>66<br/>67<br/>68<br/>69<br/>70<br/>71<br/>72</pre></td><td class="code"><pre class="highlight"><code><span class="n">algebra</span> <span class="o">::</span> <span class="kt">ByteCodeF</span> <span class="p">(</span><span class="kt">Interpreter</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="n">a</span>
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35</pre></td><td class="code"><pre class="highlight"><code><span class="n">algebra</span> <span class="o">::</span> <span class="kt">ByteCodeF</span> <span class="p">(</span><span class="kt">Interpreter</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="n">a</span>
 <span class="n">algebra</span> <span class="o">=</span> <span class="nf">\</span><span class="kr">case</span>
   <span class="kt">Ret</span> <span class="n">f</span> <span class="o">-&gt;</span> <span class="n">popI</span> <span class="o">&gt;&gt;=</span> <span class="n">f</span>
   <span class="kt">Lit</span> <span class="n">i</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">pushI</span> <span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="n">k</span>
@@ -688,43 +688,6 @@
       <span class="kt">Left</span> <span class="p">(</span><span class="kt">SomeException</span> <span class="n">ex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">throwError</span> <span class="p">(</span><span class="kt">AsyncException</span> <span class="p">(</span><span class="kt">T</span><span class="o">.</span><span class="n">pack</span> <span class="o">$</span> <span class="n">show</span> <span class="n">ex</span><span class="p">))</span>
       <span class="kt">Right</span> <span class="p">(</span><span class="kt">Left</span> <span class="n">ex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">throwError</span> <span class="p">(</span><span class="kt">AsyncException</span> <span class="p">(</span><span class="kt">T</span><span class="o">.</span><span class="n">pack</span> <span class="o">$</span> <span class="n">show</span> <span class="n">ex</span><span class="p">))</span>
       <span class="kt">Right</span> <span class="n">_r</span> <span class="o">-&gt;</span> <span class="n">k</span>
-
-<span class="n">popI</span> <span class="o">::</span> <span class="kt">Interpreter</span> <span class="kt">Value</span>
-<span class="n">popI</span> <span class="o">=</span> <span class="kr">do</span>
-  <span class="kt">Ctx</span> <span class="p">{</span><span class="o">..</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="n">get</span>
-  <span class="kr">case</span> <span class="n">stack</span> <span class="kr">of</span>
-    <span class="kt">[]</span> <span class="o">-&gt;</span> <span class="n">throwError</span> <span class="kt">StackIsEmpty</span>
-    <span class="p">(</span><span class="n">x</span> <span class="o">:</span> <span class="n">xs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">put</span> <span class="kt">Ctx</span> <span class="p">{</span><span class="n">stack</span> <span class="o">=</span> <span class="n">xs</span><span class="p">,</span> <span class="o">..</span><span class="p">}</span> <span class="o">&gt;&gt;</span> <span class="n">return</span> <span class="n">x</span>
-
-<span class="n">pushI</span> <span class="o">::</span> <span class="kt">Value</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="nb">()</span>
-<span class="n">pushI</span> <span class="n">i</span> <span class="o">=</span> <span class="kr">do</span>
-  <span class="kt">Ctx</span> <span class="p">{</span><span class="o">..</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="n">get</span>
-  <span class="n">put</span> <span class="kt">Ctx</span> <span class="p">{</span><span class="n">stack</span> <span class="o">=</span> <span class="n">i</span> <span class="o">:</span> <span class="n">stack</span><span class="p">,</span> <span class="o">..</span><span class="p">}</span>
-
-<span class="n">loadI</span> <span class="o">::</span> <span class="kt">Var</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="kt">Value</span>
-<span class="n">loadI</span> <span class="n">var</span> <span class="o">=</span> <span class="kr">do</span>
-  <span class="kt">Ctx</span> <span class="p">{</span><span class="o">..</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="n">get</span>
-  <span class="kr">case</span> <span class="kt">M</span><span class="o">.</span><span class="n">lookup</span> <span class="n">var</span> <span class="n">variables</span> <span class="kr">of</span>
-    <span class="kt">Nothing</span> <span class="o">-&gt;</span> <span class="n">throwError</span> <span class="o">$</span> <span class="kt">VariableNotFound</span> <span class="n">var</span>
-    <span class="kt">Just</span> <span class="n">v</span> <span class="o">-&gt;</span> <span class="n">return</span> <span class="n">v</span>
-
-<span class="n">storeI</span> <span class="o">::</span> <span class="kt">Var</span> <span class="o">-&gt;</span> <span class="kt">Value</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="nb">()</span>
-<span class="n">storeI</span> <span class="n">var</span> <span class="n">v</span> <span class="o">=</span> <span class="kr">do</span>
-  <span class="kt">Ctx</span> <span class="p">{</span><span class="o">..</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="n">get</span>
-  <span class="kr">let</span> <span class="n">variables'</span> <span class="o">=</span> <span class="kt">M</span><span class="o">.</span><span class="n">insert</span> <span class="n">var</span> <span class="n">v</span> <span class="n">variables</span>
-  <span class="n">put</span> <span class="kt">Ctx</span> <span class="p">{</span><span class="n">variables</span> <span class="o">=</span> <span class="n">variables'</span><span class="p">,</span> <span class="o">..</span><span class="p">}</span>
-
-<span class="n">applyOp</span> <span class="o">::</span> <span class="kt">OpCode</span> <span class="o">-&gt;</span> <span class="kt">Value</span> <span class="o">-&gt;</span> <span class="kt">Value</span> <span class="o">-&gt;</span> <span class="kt">Either</span> <span class="kt">Err</span> <span class="kt">Value</span>
-<span class="n">applyOp</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i1</span><span class="p">)</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i2</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Right</span> <span class="o">$</span> <span class="kt">I</span> <span class="p">(</span><span class="n">i1</span> <span class="o">+</span> <span class="n">i2</span><span class="p">)</span>
-<span class="n">applyOp</span> <span class="kt">Multiply</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i1</span><span class="p">)</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i2</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Right</span> <span class="o">$</span> <span class="kt">I</span> <span class="p">(</span><span class="n">i1</span> <span class="o">*</span> <span class="n">i2</span><span class="p">)</span>
-<span class="n">applyOp</span> <span class="kt">LessThan</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i1</span><span class="p">)</span> <span class="p">(</span><span class="kt">I</span> <span class="n">i2</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Right</span> <span class="o">$</span> <span class="kt">B</span> <span class="p">(</span><span class="n">i1</span> <span class="o">&lt;</span> <span class="n">i2</span><span class="p">)</span>
-<span class="n">applyOp</span> <span class="kr">_</span> <span class="kr">_</span> <span class="kr">_</span> <span class="o">=</span> <span class="kt">Left</span> <span class="kt">WhoNeedsTypes</span>
-
-<span class="n">future</span> <span class="o">::</span> <span class="kt">ByteCode</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="p">(</span><span class="kt">Future</span> <span class="n">a</span><span class="p">)</span>
-<span class="n">future</span> <span class="n">code</span> <span class="o">=</span> <span class="kr">do</span>
-  <span class="n">ctx</span> <span class="o">&lt;-</span> <span class="n">get</span>
-  <span class="n">async'</span> <span class="o">&lt;-</span> <span class="n">liftIO</span> <span class="o">.</span> <span class="n">async</span> <span class="o">.</span> <span class="n">runExceptT</span> <span class="o">$</span> <span class="n">evalStateT</span> <span class="p">(</span><span class="n">runInterpreter</span> <span class="p">(</span><span class="n">interpret</span> <span class="n">code</span><span class="p">))</span> <span class="n">ctx</span>
-  <span class="n">return</span> <span class="o">$</span> <span class="kt">Future</span> <span class="n">async'</span>
 </code></pre></td></tr></tbody></table></div></div>
 
 <p>Finally, we combine <code class="language-plaintext highlighter-rouge">iterM</code> and <code class="language-plaintext highlighter-rouge">algebra</code> to obtain</p>
@@ -774,6 +737,8 @@
 </code></pre></td></tr></tbody></table></div></div>
 
 <p>The following <code class="language-plaintext highlighter-rouge">program</code> creates two asynchronous tasks that after a period of time, return the integer <code class="language-plaintext highlighter-rouge">1</code> through an asynchronous channel. The main program waits for these two asynchronous tasks to finish and outputs the sum of the results of the asynchronous tasks.</p>
+
+<p>The source code from the examples can be found <a href="https://github.com/monadplus/free-monads-examples">here</a>.</p>
 
 <h1 id="conclusion">Conclusion</h1>
 

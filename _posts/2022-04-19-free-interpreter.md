@@ -12,7 +12,7 @@ After finishing my master's degree, I applied to several companies I was interes
 
 _"Write a stack-based interpreted language (byte code) that includes: literals, arithmetic operations, variables, and control flow primitives. As a bonus, add asynchronous primitives such as fork and await."_
 
-Fortunately, I was already familiar with the assignment because I implemented a [statically typed programming language](https://github.com/monadplus/CPP-lang) a year ago. Consequently, I decided to take this as a chance and do something than the rest of the candidates. Spoiler: free monads!
+Fortunately, I was already familiar with the assignment because I implemented a [statically typed programming language](https://github.com/monadplus/CPP-lang) a year ago. Consequently, I decided to take this as a chance and do something different than the rest of the candidates. Spoiler: free monads!
 
 # Free monads
 
@@ -28,7 +28,7 @@ data Free f a = Pure a | Free (f (Free f a))
 
 `Free f` is simply a stack of layers `f` on top of a value `a`. 
 
-The interesting part about `Free f` is that `Free f` is a [monad](https://hackage.haskell.org/package/base-4.14.1.0/docs/Control-Monad.html#t:Monad) as long as `f` is a [functor](https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Functor.html#t:Functor) (this is why it is called _free_, because you get a monad for free).
+The interesting part about `Free f` is that `Free f` is a [monad](https://hackage.haskell.org/package/base-4.14.1.0/docs/Control-Monad.html#t:Monad) as long as `f` is a [functor](https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Functor.html#t:Functor).
 
 ```haskell
 instance Functor f => Monad (Free f) where
@@ -107,7 +107,7 @@ lit :: Value -> ByteCode ()
 lit v = Free (Lit v (Pure ()))
 ```
 
-Implementing this for each constructor is tedious and error prone. This problem can be solved with metaprogramming. In particular, with [template haskell](https://hackage.haskell.org/package/template-haskell-2.17.0.0/docs/Language-Haskell-TH.html) (for an introduction to template haskell see my [blog post](http://localhost:4000/haskell/2021/10/14/th)). Fortunately, this is already implemented in [Control.Monad.Free.TH](https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free-TH.html). 
+Implementing this for each constructor is tedious and error prone. This problem can be solved with metaprogramming. In particular, with [template haskell](https://hackage.haskell.org/package/template-haskell-2.17.0.0/docs/Language-Haskell-TH.html) (for an introduction to template haskell see my [blog post](https://monadplus.pro/haskell/2021/10/14/th/)). Fortunately, this is already implemented in [Control.Monad.Free.TH](https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free-TH.html). 
 
 Therefore, we are going to use `makeFree` to automatically derive all these free monadic actions
 
@@ -238,43 +238,6 @@ algebra = \case
       Left (SomeException ex) -> throwError (AsyncException (T.pack $ show ex))
       Right (Left ex) -> throwError (AsyncException (T.pack $ show ex))
       Right _r -> k
-
-popI :: Interpreter Value
-popI = do
-  Ctx {..} <- get
-  case stack of
-    [] -> throwError StackIsEmpty
-    (x : xs) -> put Ctx {stack = xs, ..} >> return x
-
-pushI :: Value -> Interpreter ()
-pushI i = do
-  Ctx {..} <- get
-  put Ctx {stack = i : stack, ..}
-
-loadI :: Var -> Interpreter Value
-loadI var = do
-  Ctx {..} <- get
-  case M.lookup var variables of
-    Nothing -> throwError $ VariableNotFound var
-    Just v -> return v
-
-storeI :: Var -> Value -> Interpreter ()
-storeI var v = do
-  Ctx {..} <- get
-  let variables' = M.insert var v variables
-  put Ctx {variables = variables', ..}
-
-applyOp :: OpCode -> Value -> Value -> Either Err Value
-applyOp Add (I i1) (I i2) = Right $ I (i1 + i2)
-applyOp Multiply (I i1) (I i2) = Right $ I (i1 * i2)
-applyOp LessThan (I i1) (I i2) = Right $ B (i1 < i2)
-applyOp _ _ _ = Left WhoNeedsTypes
-
-future :: ByteCode a -> Interpreter (Future a)
-future code = do
-  ctx <- get
-  async' <- liftIO . async . runExceptT $ evalStateT (runInterpreter (interpret code)) ctx
-  return $ Future async'
 ```
 
 Finally, we combine `iterM` and `algebra` to obtain
@@ -325,6 +288,8 @@ main = case runByteCode program of
 ```
 
 The following `program` creates two asynchronous tasks that after a period of time, return the integer `1` through an asynchronous channel. The main program waits for these two asynchronous tasks to finish and outputs the sum of the results of the asynchronous tasks.
+
+The source code from the examples can be found [here](https://github.com/monadplus/free-monads-examples).
 
 # Conclusion
 
