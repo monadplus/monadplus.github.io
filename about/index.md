@@ -3,21 +3,11 @@ layout: page
 type: about
 ---
 
-![portrait of myself](/assets/images/portrait_small.jpeg)
+Hi! My name's Arnau Abella. I'm a software engineer based on Barcelona (Spain). I finished my master's degree in Computer Science at [Universitat Politècnica de Catalunya](https://www.fib.upc.edu/) in 2022. A copy of my master's thesis _"Distributed Complex Event Recognition"_ can be found [here](/assets/documents/thesis.pdf). I work at [coinweb.io](https://coinweb.io/) building a cross-chain computational platform.
 
-Hi! My name's Arnau Abella. I'm a software engineer living in Barcelona.
-
-I finished my master's degree in Computer Science at [Universitat Politècnica de Catalunya](https://www.fib.upc.edu/) in 2022. A copy of my master's thesis _"Distributed Complex Event Recognition"_ can be found [here](/assets/documents/thesis.pdf). I work at [coinweb.io](https://coinweb.io/) building a cross-chain computational platform.
-
-My main interests are programming language theory and compilers. 
-I have a strong interest in functional programming, Haskell in particular.
-I have [several projects](https://github.com/monadplus?tab=repositories&q=&type=&language=haskell) written in Haskell. A hackage library: [rbst](https://hackage.haskell.org/package/rbst). And I use Haskell and Rust daily at work.
-
-![keyboard and mouse](/assets/images/keyboard.jpg)
-
-All my computers run [Arch](https://github.com/monadplus/dotfiles) or [NixOS](https://github.com/monadplus/nixconfig). My editor of choice is Emacs. I have two thinkpads: T495 and p14s. My powerstation runs a i7-12700KF and a Nvidia 3060ti. My keyboard and mouse are: [Keyboardio Model 01](https://shop.keyboard.io/products/model-01-keyboard?variant=30996744405065) and [Kensington Expert Trackball](https://www.kensington.com/p/products/electronic-control-solutions/trackball-products/expert-mouse-wireless-trackball-1/).
-
-![powerstation](/assets/images/pc_small.jpg) 
+My main interests are programming language theory, type theory and compilers.
+I have a strong interest in functional programming. In particular Haskell, which I used daily for my open source projects.
+I have [several projects](https://github.com/monadplus?tab=repositories&q=&type=&language=haskell) written in Haskell. I am also the author of a [hackage](https://hackage.haskell.org/) library called [rbst](https://hackage.haskell.org/package/rbst). At work, I used daily both Haskell and Rust.
 
 ## Projects
 
@@ -32,3 +22,11 @@ All my computers run [Arch](https://github.com/monadplus/dotfiles) or [NixOS](ht
 - [Generic Programming in Scala with Shapeless](https://github.com/monadplus/intro-shapeless)
 - [Lenses in Scala with Monacle](https://github.com/monadplus/scala-lenses)
 - [Parallelism and Concurrency in Haskell](https://github.com/monadplus/parconc-notes/tree/main/talk)
+
+## My working setup
+
+I usually work on a high-end desktop (Intel i7-12700KF, Nvidia RTX 3060ti, 32GB of RAM, 2TB of SSD...) with proper peripherals and ergonomic desk. When I am travelling, I work on a Thinkpad p14s.
+
+![desktop setup](/assets/images/desktop_setup.jpg) 
+
+All my computers run on [Arch](https://github.com/monadplus/dotfiles) (I used to work on [NixOS](https://github.com/monadplus/nixconfig), but I decide to move to Arch for several reasons). My editor of choice is [Emacs](https://www.gnu.org/software/emacs/).
