@@ -3,11 +3,9 @@ layout: page
 type: about
 ---
 
-Hi! My name's Arnau Abella. I'm a software engineer based on Barcelona (Spain). I finished my master's degree in Computer Science at [Universitat Politècnica de Catalunya](https://www.fib.upc.edu/) in 2022. A copy of my master's thesis _"Distributed Complex Event Recognition"_ can be found [here](/assets/documents/thesis.pdf). I work at [coinweb.io](https://coinweb.io/) building a cross-chain computational platform.
+Hi! Name's Arnau Abella. I'm a software engineer based in Barcelona (Spain). I finished my master's degree in Computer Science at [Universitat Politècnica de Catalunya](https://www.fib.upc.edu/) in 2022. A copy of my master's thesis _"Distributed Complex Event Recognition"_ can be found [here](/assets/documents/thesis.pdf). I work at [coinweb.io](https://coinweb.io/) building a cross-chain computational platform.
 
-My main interests are programming language theory, type theory and compilers.
-I have a strong interest in functional programming. In particular Haskell, which I used daily for my open source projects.
-I have [several projects](https://github.com/monadplus?tab=repositories&q=&type=&language=haskell) written in Haskell. I am also the author of a [hackage](https://hackage.haskell.org/) library called [rbst](https://hackage.haskell.org/package/rbst). At work, I used daily both Haskell and Rust.
+My main interests are programming language theory, type theory and compilers. I also have a strong interest in functional programming. Haskell specially, which I use daily for my open source projects. I have [several projects](https://github.com/monadplus?tab=repositories&q=&type=&language=haskell) written in Haskell. I am also the author of a [hackage](https://hackage.haskell.org/) library called [rbst](https://hackage.haskell.org/package/rbst). At work, I used daily both Haskell and Rust.
 
 ## Projects
 
@@ -29,4 +27,4 @@ I usually work on a high-end desktop (Intel i7-12700KF, Nvidia RTX 3060ti, 32GB 
 
 ![desktop setup](/assets/images/desktop_setup.jpg) 
 
-All my computers run on [Arch](https://github.com/monadplus/dotfiles) (I used to work on [NixOS](https://github.com/monadplus/nixconfig), but I decide to move to Arch for several reasons). My editor of choice is [Emacs](https://www.gnu.org/software/emacs/).
+All my computers run on [Arch](https://github.com/monadplus/dotfiles) (I used to run [NixOS](https://github.com/monadplus/nixconfig), but I decide to move to Arch for several reasons). My editor of choice is [Emacs](https://www.gnu.org/software/emacs/).
