@@ -5,7 +5,7 @@ type: about
 
 Hi! Name's Arnau Abella. I'm a software engineer based in Barcelona (Spain). I finished my master's degree in Computer Science at [Universitat Politècnica de Catalunya](https://www.fib.upc.edu/) in 2022. A copy of my master's thesis _"Distributed Complex Event Recognition"_ can be found [here](/assets/documents/thesis.pdf). I work at [coinweb.io](https://coinweb.io/) building a cross-chain computational platform.
 
-My main interests are programming language theory, type theory and compilers. I also have a strong interest in functional programming. Haskell specially, which I use daily for my open source projects. I have [several projects](https://github.com/monadplus?tab=repositories&q=&type=&language=haskell) written in Haskell. I am also the author of a [hackage](https://hackage.haskell.org/) library called [rbst](https://hackage.haskell.org/package/rbst). At work, I used daily both Haskell and Rust.
+My main interests are programming language theory, type theory and compilers. I also have a strong interest in functional programming, in particular [Haskell](https://www.haskell.org/), which I use daily for my open source projects. I have [several projects](https://github.com/monadplus?tab=repositories&q=&type=&language=haskell) written in Haskell. I am also the author of a [hackage](https://hackage.haskell.org/) library called [rbst](https://hackage.haskell.org/package/rbst). At work, I used daily both Haskell and Rust.
 
 ## Projects
 
