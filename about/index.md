@@ -3,28 +3,34 @@ layout: page
 type: about
 ---
 
-Hi! Name's Arnau Abella. I'm a software engineer based in Barcelona (Spain). I finished my master's degree in Computer Science at [Universitat Politècnica de Catalunya](https://www.fib.upc.edu/) in 2022. A copy of my master's thesis _"Distributed Complex Event Recognition"_ can be found [here](/assets/documents/thesis.pdf). I work at [coinweb.io](https://coinweb.io/) building a cross-chain computational platform.
+My name is Arnau Abella. I'm a software engineer based in Barcelona (Spain). I have been developing software profesionally since 2017 and graduated as M.Sc. in Computer Science ([_"Distributed Complex Event Recognition"_](/assets/documents/thesis.pdf)) at [Universitat Politècnica de Catalunya](https://www.fib.upc.edu/) in 2022.
 
-My main interests are programming language theory, type theory and compilers. I also have a strong interest in functional programming, in particular [Haskell](https://www.haskell.org/), which I use daily for my open source projects. I have [several projects](https://github.com/monadplus?tab=repositories&q=&type=&language=haskell) written in Haskell. I am also the author of a [hackage](https://hackage.haskell.org/) library called [rbst](https://hackage.haskell.org/package/rbst). At work, I used daily both Haskell and Rust.
+I specialized in backend development and worked in several interesting projects including:
+- A cross-chain computational platform.
+- A payment gateway.
+- A real-time routing algorithm.
+- A knowledge management system for museums.
+- A smart remote controller for industrial cold rooms.
 
-## Projects
+My programming languages journey:
+- [Scala](https://scala-lang.org/) (2017-2019)
+  - Author: [equality](https://github.com/monadplus/equality), and [DCORE](https://github.com/dtim-upc/DCORE)
+  - Contributor: [fs2](https://github.com/typelevel/fs2), and [scala-pet-store](https://github.com/pauljamescleary/scala-pet-store)
+  - Talks: [Generic Programming in Scala with Shapeless](https://github.com/monadplus/intro-shapeless), and [Lenses in Scala with Monacle](https://github.com/monadplus/scala-lenses)
+- [Haskell](https://www.haskell.org/) (2018-2022):
+  - Author: [CPP-lang](https://github.com/monadplus/CPP-lang), [rbst](https://hackage.haskell.org/package/rbst), [floorplanning](https://github.com/monadplus/floorplanning), and [twitch game](https://github.com/monadplus/twitch-game)
+  - Contributor: [prometheus-port](https://github.com/on-ramp/prometheus-port)
+  - Talks: [Parallelism and Concurrency in Haskell](https://github.com/monadplus/parconc-notes/tree/main/talk)
+- [Rust](https://www.rust-lang.org/) (2021-now)
+  - Author: [toy_atm](https://github.com/monadplus/toy_atm)
+  - Contributor:
+  - Talks:
 
-- [DCORE](https://github.com/dtim-upc/DCORE), a distributed complex event recognition engine
-- [rbst](https://hackage.haskell.org/package/rbst), randomized binary trees for Haskell
-- [cpp-lang](https://github.com/monadplus/CPP-lang), a toy programming language written in Haskell
-- [twitch-game](https://github.com/monadplus/twitch-game/), backend for _Otter Chaos Repair_(hackaton game)
-- [equality](https://monadplus.github.io/equality/), a test utility library for Scala
+Other projects: [Stroke prediction](https://github.com/monadplus/ml-project), [box wrapping problem](https://github.com/monadplus/box_wrapping_problem), [plfa: solutions](https://github.com/monadplus/plfa-solutions), and [NixOS configuration](https://github.com/monadplus/nixconfig)
 
-## Talks
-
-- [Generic Programming in Scala with Shapeless](https://github.com/monadplus/intro-shapeless)
-- [Lenses in Scala with Monacle](https://github.com/monadplus/scala-lenses)
-- [Parallelism and Concurrency in Haskell](https://github.com/monadplus/parconc-notes/tree/main/talk)
-
-## My working setup
-
-I usually work on a high-end desktop (Intel i7-12700KF, Nvidia RTX 3060ti, 32GB of RAM, 2TB of SSD...) with proper peripherals and ergonomic desk. When I am travelling, I work on a Thinkpad p14s.
+My working setup:
+- All my computers run [Arch](https://archlinux.org/)(linux) with a [highly customized workflow](https://github.com/monadplus/dotfiles). 
+- My editor of choice is ~~[emacs](https://www.gnu.org/software/emacs/)~~ [neovim](https://github.com/neovim/neovim). 
+- I usually work on a high-end desktop (i7-12700KF + RTX 3060ti) with proper peripherals and ergonomic desk. When I am travelling, I work on a Thinkpad p14s. 
 
 ![desktop setup](/assets/images/desktop_setup.jpg) 
-
-All my computers run on [Arch](https://github.com/monadplus/dotfiles) (I used to run [NixOS](https://github.com/monadplus/nixconfig), but I decide to move to Arch for several reasons). My editor of choice is [Emacs](https://www.gnu.org/software/emacs/).
