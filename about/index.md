@@ -26,11 +26,12 @@ My programming languages journey:
   - Contributor:
   - Talks:
 
-Other projects: [Stroke prediction](https://github.com/monadplus/ml-project), [box wrapping problem](https://github.com/monadplus/box_wrapping_problem), [plfa: solutions](https://github.com/monadplus/plfa-solutions), and [NixOS configuration](https://github.com/monadplus/nixconfig)
+Other projects: [Stroke prediction](https://github.com/monadplus/ml-project), [box wrapping problem](https://github.com/monadplus/box_wrapping_problem), [plfa: solutions](https://github.com/monadplus/plfa-solutions)..
 
-My working setup:
-- All my computers run [Arch](https://archlinux.org/)(linux) with a [highly customized workflow](https://github.com/monadplus/dotfiles). 
-- My editor of choice is ~~[emacs](https://www.gnu.org/software/emacs/)~~ [neovim](https://github.com/neovim/neovim). 
-- I usually work on a high-end desktop (i7-12700KF + RTX 3060ti) with proper peripherals and ergonomic desk. When I am travelling, I work on a Thinkpad p14s. 
+My working environment:
+- I have been working remotly for over 6 years.
+- I usually work from home on a high-end desktop (compile-times are important!) with proper peripherals and ergonomic desk. Furthermore, I always have an updated laptop (Thinkpad p14s) prepared for travelling!
+- All my computers run [Arch](https://archlinux.org/)(linux) with a highly customized workflow.
+- My editor of choice is [Neovim](https://github.com/neovim/neovim) (see [configuration](https://github.com/monadplus/nvim))
 
 ![desktop setup](/assets/images/desktop_setup.jpg) 
