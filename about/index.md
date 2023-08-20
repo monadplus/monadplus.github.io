@@ -3,7 +3,7 @@ layout: page
 type: about
 ---
 
-My name is Arnau Abella. I'm a software engineer based in Barcelona (Spain). I have been developing software profesionally since 2017 and graduated as M.Sc. in Computer Science ([_"Distributed Complex Event Recognition"_](/assets/documents/thesis.pdf)) at [Universitat Politècnica de Catalunya](https://www.fib.upc.edu/) in 2022.
+My name is Arnau Abella. I'm a software engineer based in Barcelona (Spain). I have been developing software profesionally since 2017 and graduated as M.Sc. in Computer Science ([_"Distributed Complex Event Recognition"_](/assets/documents/thesis.pdf)) at [Universitat Politècnica de Catalunya](https://www.fib.upc.edu/) in 2022. Currently working in the area of distributed systems, microservices and cryptocurrencies on a large Rust team (+200 people).
 
 Professional projects:
 - Payment gateway
@@ -13,7 +13,7 @@ Professional projects:
 
 Open source & personal projects:
 - Haskell
-  - Author: [CPP-lang](https://github.com/monadplus/CPP-lang), [rbst](https://hackage.haskell.org/package/rbst), [floorplanning](https://github.com/monadplus/floorplanning), [parsing-by-example](https://github.com/monadplus/parsing-by-example), and [twitch game](https://github.com/monadplus/twitch-game)
+  - Author: [CPP-lang](https://github.com/monadplus/CPP-lang), [rbst](https://hackage.haskell.org/package/rbst), [floorplanning](https://github.com/monadplus/floorplanning), [parsing-by-example](https://github.com/monadplus/parsing-by-example), and [a twitch game](https://github.com/monadplus/twitch-game)
   - Contributor: [prometheus-port](https://github.com/on-ramp/prometheus-port)
   - Talks: [Parallelism and Concurrency in Haskell](https://github.com/monadplus/parconc-notes/tree/main/talk)
 - Rust
@@ -28,10 +28,9 @@ Open source & personal projects:
 - C++: [Box Wrapping Problem](https://github.com/monadplus/box_wrapping_problem)
 - Agda: [Programming Language Foundation in Agda (Solutions)](https://github.com/monadplus/plfa-solutions)
 - Dotfiles:
-  - Arch Linux[^1]
+  - Arch Linux and NixOS[^1]
   - [Keyboardio](https://github.com/monadplus/Kaleidoscope)
   - [Neovim](https://github.com/monadplus/nvim)
-  - NixOS[^1]
 
 Education:
 - BSc in Computer Science at Facultat d'Informàtica de Barcelona ([FIB](https://www.fib.upc.edu/en)).
@@ -39,9 +38,9 @@ Education:
 
 About my home office:
 - I have been working remotely for over 6 years. 
-- I usually work from home for better productivity. You can find my current setup below.
-- My laptop, a Thinkpad p14s, is always ready for any activity outside my home.
+- I usually work from home for better productivity.
+- My laptop (Thinkpad p14s) is always ready for any activity outside my home.
 
 ![desktop](/assets/images/desktop.jpg) 
 
-[^1]: Private, for security reasons
+[^1]: Private - for security reasons

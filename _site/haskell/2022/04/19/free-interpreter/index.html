@@ -466,7 +466,7 @@
 
 <p><em>“Write a stack-based interpreted language (byte code) that includes: literals, arithmetic operations, variables, and control flow primitives. As a bonus, add asynchronous primitives such as fork and await.”</em></p>
 
-<p>Fortunately, I was already familiar with the assignment because I implemented a <a href="https://github.com/monadplus/CPP-lang">statically typed programming language</a> a year ago. Consequently, I decided to take this as a chance and do something than the rest of the candidates. Spoiler: free monads!</p>
+<p>Fortunately, I was already familiar with the assignment because I implemented a <a href="https://github.com/monadplus/CPP-lang">statically typed programming language</a> a year ago. Consequently, I decided to take this as a chance and do something different than the rest of the candidates. Spoiler: free monads!</p>
 
 <h1 id="free-monads">Free monads</h1>
 
@@ -483,7 +483,7 @@
 
 <p><code class="language-plaintext highlighter-rouge">Free f</code> is simply a stack of layers <code class="language-plaintext highlighter-rouge">f</code> on top of a value <code class="language-plaintext highlighter-rouge">a</code>.</p>
 
-<p>The interesting part about <code class="language-plaintext highlighter-rouge">Free f</code> is that <code class="language-plaintext highlighter-rouge">Free f</code> is a <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Control-Monad.html#t:Monad">monad</a> as long as <code class="language-plaintext highlighter-rouge">f</code> is a <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Functor.html#t:Functor">functor</a> (this is why it is called <em>free</em>, because you get a monad for free).</p>
+<p>The interesting part about <code class="language-plaintext highlighter-rouge">Free f</code> is that <code class="language-plaintext highlighter-rouge">Free f</code> is a <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Control-Monad.html#t:Monad">monad</a> as long as <code class="language-plaintext highlighter-rouge">f</code> is a <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Functor.html#t:Functor">functor</a>.</p>
 
 <div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code><span class="kr">instance</span> <span class="kt">Functor</span> <span class="n">f</span> <span class="o">=&gt;</span> <span class="kt">Monad</span> <span class="p">(</span><span class="kt">Free</span> <span class="n">f</span><span class="p">)</span> <span class="kr">where</span>
   <span class="n">return</span> <span class="o">=</span> <span class="n">pure</span>
@@ -562,7 +562,7 @@
 <span class="n">lit</span> <span class="n">v</span> <span class="o">=</span> <span class="kt">Free</span> <span class="p">(</span><span class="kt">Lit</span> <span class="n">v</span> <span class="p">(</span><span class="kt">Pure</span> <span class="nb">()</span><span class="p">))</span>
 </code></pre></td></tr></tbody></table></div></div>
 
-<p>Implementing this for each constructor is tedious and error prone. This problem can be solved with metaprogramming. In particular, with <a href="https://hackage.haskell.org/package/template-haskell-2.17.0.0/docs/Language-Haskell-TH.html">template haskell</a> (for an introduction to template haskell see my <a href="http://localhost:4000/haskell/2021/10/14/th">blog post</a>). Fortunately, this is already implemented in <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free-TH.html">Control.Monad.Free.TH</a>.</p>
+<p>Implementing this for each constructor is tedious and error prone. This problem can be solved with metaprogramming. In particular, with <a href="https://hackage.haskell.org/package/template-haskell-2.17.0.0/docs/Language-Haskell-TH.html">template haskell</a> (for an introduction to template haskell see my <a href="https://monadplus.pro/haskell/2021/10/14/th/">blog post</a>). Fortunately, this is already implemented in <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free-TH.html">Control.Monad.Free.TH</a>.</p>
 
 <p>Therefore, we are going to use <code class="language-plaintext highlighter-rouge">makeFree</code> to automatically derive all these free monadic actions</p>
 
@@ -1045,7 +1045,7 @@
   
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
