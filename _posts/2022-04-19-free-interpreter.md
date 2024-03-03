@@ -10,25 +10,33 @@ tags:
 
 After finishing my master's degree, I applied to several companies I was interested in. During one of the selection processes, the interviewer asked me to do the following exercise:
 
-_"Write a stack-based interpreted language (byte code) that includes: literals, arithmetic operations, variables, and control flow primitives. As a bonus, add asynchronous primitives such as fork and await."_
+_"Write a stack-based interpreted language that includes: literals, arithmetic operations, variables, and control flow primitives. As a bonus, add asynchronous primitives such as fork and await."_
 
-Fortunately, I was already familiar with the assignment because I implemented a [statically typed programming language](https://github.com/monadplus/CPP-lang) a year ago. Consequently, I decided to take this as a chance and do something different than the rest of the candidates. Spoiler: free monads!
+Fortunately, I was already familiar with the assignment because I implemented a [statically typed programming language](https://github.com/monadplus/CPP-lang) a year ago. Consequently, I decided to take this as a chance and do something different than the rest of the candidates. Spoiler: haskell + free monads!
+
+> The source code from this blog can be found [here](https://github.com/monadplus/free-monads-by-example). My recommendation is to have both opened side-by-side.
 
 # Free monads
 
-The concept of _free monad_ comes from the field of category theory (CT). The formal definition requires a strong background in CT. So, to keep this pragmatic, we are going to consider the following definition: 
+The concept of a _free monad_ comes from the field of Category Theory (CT). The [formal definition](https://ncatlab.org/nlab/show/free+monad) is hard to grasp without a background in CT. In terms of programming, a more pragmatic definition is
 
-> For any functor $f$, there exists a uniquely determined monad called the _free monad_ of the functor $f$.
+**Def**. For any functor $f$, there exists a _uniquely_ determined monad called the _free monad_ of the functor $f$ [^1]
 
-Probably this definition is still too general, so let's see how this is translated into Haskell. In particular, we are going to base our work on the encoding of free monads of the haskell package [free](https://hackage.haskell.org/package/free) by Edward Kmett et al. The definition is as follows:
+In plain words, we can transform _any_ functor $f$ into a monad...And you may be wondering "how is that useful to write an interpreter in Haskell? You'll see in a bit, stick with me.
+
+## Free monads encoded in Haskell
+
+Let's show how free monads is translated into Haskell. We are going to base our work on the encoding of free monads of the haskell package [free](https://hackage.haskell.org/package/free) by Edward Kmett. The definition is as follows:
 
 ```haskell
 data Free f a = Pure a | Free (f (Free f a))
 ```
 
-`Free f` is simply a stack of layers `f` on top of a value `a`. 
+You can think of `Free f`  as a stack of layers `f` on top of a value `a`. 
 
-The interesting part about `Free f` is that `Free f` is a [monad](https://hackage.haskell.org/package/base-4.14.1.0/docs/Control-Monad.html#t:Monad) as long as `f` is a [functor](https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Functor.html#t:Functor).
+We will encode our interpreted language as a set of free monadic actions (instructions) represented as a datatype with a functorial shape. And our programs will be just a stack of thes instructions.
+
+The interesting part about `Free f` is that `Free f` is a [monad](https://hackage.haskell.org/package/base-4.14.1.0/docs/Control-Monad.html#t:Monad) as long as `f` is a [functor](https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Functor.html#t:Functor):
 
 ```haskell
 instance Functor f => Monad (Free f) where
@@ -37,21 +45,14 @@ instance Functor f => Monad (Free f) where
   Free m >>= f = Free ((>>= f) <$> m)
 ```
 
-This will allow us to compose free actions by embedding new layers on the bottom of the stack of layers, which is essential to model domain specific languages.
+This will allow us to compose programs for free[^2]. 
+On top of that, do-notation gives us a nice syntax to compose 'em all!
 
-In practise, the user builds a free monad stacking layers of their domain specific language modelled as a functor. Later, it executes `iter` (or its corresponding applicative and monadic version) to interpret and collapse each layer into a single (effectful) value.
-
-```haskell
-iter :: Functor f => (f a -> a) -> Free f a -> a
-iterA :: (Applicative p, Functor f) => (f (p a) -> p a) -> Free f a -> p a 
-iterM :: (Monad m, Functor f) => (f (m a) -> m a) -> Free f a -> m a 
-```
-
-In the next section, we will see how to put that into practise.
+In the next section, we will finally see how to put this into practise.
 
 # Solving the assignment
 
-When modeling an embedded domain specific language (eDSL) using free monads, you usually divide the problem in two parts:
+When modeling a language[^3] using free monads, you usually divide the problem in two parts:
 1. Define your language. 
 2. Define the interpreter for your language.
 
@@ -76,7 +77,7 @@ data ByteCodeF next
   | Recv Channel next
   | Fork (ByteCode ()) (Future () -> next)
   | Await (Future ()) next
-  deriving stock (Functor)
+  deriving (Functor)
 
 data Value
   = B Bool
@@ -115,7 +116,7 @@ Therefore, we are going to use `makeFree` to automatically derive all these free
 $(makeFree ''ByteCodeF)
 ```
 
-which generates the following code
+which generates the following code[^4]
 
 ```haskell
 lit      :: Value                         -> ByteCode ()
@@ -129,50 +130,38 @@ fork     :: ByteCode ()                   -> ByteCode (Async ())
 await    :: Async ()                      -> ByteCode ()
 ```
 
-> The actual signatures use [MonadFree](https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#t:MonadFree) which is an mtl-style class that allow us to compose [FreeT](https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Trans-Free.html#t:FreeT) with other monad transformers. We were able to monomorphize the return value `MonadFree f m => m ~ Free ByteCodeF` thanks to the instance `Functor f => MonadFree f (Free f)`.
-
-Once we have the basic building blocks of our language, we can start building more complex primitives using monadic composition! 
+Once we have the basic building blocks of our language, we can start building programs by composing smaller programs using monadic composition!
 
 ```haskell
 loopN :: Integer -> ByteCode ()
 loopN until = do
-
+  let {n = "n"; i = "i"}
   litI until
   write n
   litI 1
   write i
   loop (i < n) (i ++)
 
-  where
+(<) i n = do
+  load n
+  load i
+  lessThan
+  ret
   
-      (<) i n = do
-      load n
-      load i
-      lessThan
-      ret
-  
-      (++) i = do
-      litI 1
-      load i
-      add
-      write i
+(++) i = do
+  litI 1
+  load i
+  add
+  write i
 ```
 
-## Interpreting our eDSL
+## Interpreting our program
 
 Now that we have the building blocks to construct our domain specific programs, it is only remaining to implement an interpreter to evaluate this embedded DSL in our host language Haskell.
 
-The interpreter is usually implemented using [iterM](https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#v:iterM):
+The interpreter is usually implemented using [iterM](https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#v:iterM), which allows us to collapse our `Free f` into a monadic value `m a` by providing a function `f (m a) -> m a` (usually called an _algebra_) that operates on a single layer of our free monad. If you are familiar with recursion schemes, `iterM` is a specialization of [cataA](https://hackage.haskell.org/package/recursion-schemes-5.2.2.2/docs/Data-Functor-Foldable.html#v:cataA). This may sound confusing at first, but it is easier than it sounds.
 
-```haskell
-iterM :: (Monad m, Functor f) => (f (m a) -> m a) -> Free f a -> m a
-iterM _   (Pure x) = return x
-iterM phi (Free f) = phi (iterM phi <$> f)
-```
-
-`iterM` allow us to collapse our `Free f` into a monadic value `m a` by providing a function `f (m a) -> m a` (usually called an _algebra_) that operates on a single layer of our free monad. If you are familiar with recursion schemes, `iterm` is a specialization of [cataA](https://hackage.haskell.org/package/recursion-schemes-5.2.2.2/docs/Data-Functor-Foldable.html#v:cataA). 
-
-This may sound confusing at first, but it is easier than it looks like. So, let's see how it would look like in our example. First of all, we need to choose the monadic value `m`. For our interpreted language, we choose `m ~ Interpreter`
+First of all, we need to choose the monadic value `m`. For our interpreted language, we choose `m ~ Interpreter`
 
 ```haskell
 newtype Interpreter a = Interpreter 
@@ -192,7 +181,6 @@ data Err
 ```
 
 where `Ctx` is the current context of our program i.e. the state of the stack and the memory registers. 
-
 Then, we specialize `iterM` to our example
 
 ```haskell
@@ -257,7 +245,7 @@ runByteCode = unsafePerformIO . runExceptT . flip evalStateT emptyCtx . runInter
 ## All together
 
 So far, we have built the following components:
-1. An embedded stack-based language in Haskell with primitives like: `lit`, `load`, `write`, `loop` ...
+1. An (embedded) stack-based language in Haskell with primitives like: `lit`, `load`, `write`, `loop` ...
 2. An interpreter for that language: `interpret` and `runByteCode`.
 
 Now that we have all the ingredients to create embedded stack-based programs and interpret them, we can put this into practise. 
@@ -289,10 +277,16 @@ main = case runByteCode program of
 
 The following `program` creates two asynchronous tasks that after a period of time, return the integer `1` through an asynchronous channel. The main program waits for these two asynchronous tasks to finish and outputs the sum of the results of the asynchronous tasks.
 
-The source code from the examples can be found [here](https://github.com/monadplus/free-monads-examples).
-
 # Conclusion
 
 In this post, we have introduced free monads and how they can be used to implement embedded domain specific languages. In particular, we have seen how to embed a stack-based language in Haskell. To see other examples of domain specific languages, we refer the reader to the [examples of the free package](https://github.com/ekmett/free/tree/master/examples).
 
 This post only covered a half of the [free](https://hackage.haskell.org/package/free) package. In the next post of this series, we'll explore the other half: church encoding, applicative free, cofree...
+
+[^1]: The term "free" in the context of CT refers to the fact that we have not added structure to the original object. Don't confuse the term with the adjective free: "costing nothing".
+
+[^2]: Pun intended.
+
+[^3]: Technically you are defining an embedded domain specific language (eDSL).
+
+[^4]: The actual signatures use [MonadFree](https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#t:MonadFree) which is an mtl-style class that allow us to compose [FreeT](https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Trans-Free.html#t:FreeT) with other monad transformers. We were able to monomorphize the return value `MonadFree f m => m ~ Free ByteCodeF` thanks to the instance `Functor f => MonadFree f (Free f)`.

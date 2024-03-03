@@ -466,24 +466,34 @@
 
 <p><em>“Write a stack-based interpreted language (byte code) that includes: literals, arithmetic operations, variables, and control flow primitives. As a bonus, add asynchronous primitives such as fork and await.”</em></p>
 
-<p>Fortunately, I was already familiar with the assignment because I implemented a <a href="https://github.com/monadplus/CPP-lang">statically typed programming language</a> a year ago. Consequently, I decided to take this as a chance and do something different than the rest of the candidates. Spoiler: free monads!</p>
+<p>Fortunately, I was already familiar with the assignment because I implemented a <a href="https://github.com/monadplus/CPP-lang">statically typed programming language</a> a year ago. Consequently, I decided to take this as a chance and do something different than the rest of the candidates. Spoiler: haskell + free monads!</p>
+
+<blockquote>
+  <p>The source code from this blog can be found <a href="https://github.com/monadplus/free-monads-by-example">here</a>. My recommendation is to have both opened side-by-side.</p>
+</blockquote>
 
 <h1 id="free-monads">Free monads</h1>
 
-<p>The concept of <em>free monad</em> comes from the field of category theory (CT). The formal definition requires a strong background in CT. So, to keep this pragmatic, we are going to consider the following definition:</p>
+<p>The concept of <em>free monad</em> comes from the field of category theory (CT). The <a href="https://ncatlab.org/nlab/show/free+monad">formal definition</a> is hard to grasp without a background in CT. In terms of programming, a more pragmatic definition is</p>
 
-<blockquote>
-  <p>For any functor $f$, there exists a uniquely determined monad called the <em>free monad</em> of the functor $f$.</p>
-</blockquote>
+<p><strong>Def</strong>. For any functor $f$, there exists a <em>uniquely</em> determined monad called the <em>free monad</em> of the functor $f$ <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup></p>
 
-<p>Probably this definition is still too general, so let’s see how this is translated into Haskell. In particular, we are going to base our work on the encoding of free monads of the haskell package <a href="https://hackage.haskell.org/package/free">free</a> by Edward Kmett et al. The definition is as follows:</p>
+<p>In plain words, we can transform <em>any</em> functor $f$ into a monad $m$.</p>
+
+<p>You may be wondering how is that useful to write an interpreter in Haskell. You’ll see in a bit!.</p>
+
+<h2 id="free-monads-encoded-in-haskell">Free monads encoded in Haskell</h2>
+
+<p>Let’s show how free monads is translated into Haskell. We are going to base our work on the encoding of free monads of the haskell package <a href="https://hackage.haskell.org/package/free">free</a> by Edward Kmett. The definition is as follows:</p>
 
 <div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="kr">data</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">=</span> <span class="kt">Pure</span> <span class="n">a</span> <span class="o">|</span> <span class="kt">Free</span> <span class="p">(</span><span class="n">f</span> <span class="p">(</span><span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span><span class="p">))</span>
 </code></pre></td></tr></tbody></table></div></div>
 
 <p><code class="language-plaintext highlighter-rouge">Free f</code> is simply a stack of layers <code class="language-plaintext highlighter-rouge">f</code> on top of a value <code class="language-plaintext highlighter-rouge">a</code>.</p>
 
-<p>The interesting part about <code class="language-plaintext highlighter-rouge">Free f</code> is that <code class="language-plaintext highlighter-rouge">Free f</code> is a <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Control-Monad.html#t:Monad">monad</a> as long as <code class="language-plaintext highlighter-rouge">f</code> is a <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Functor.html#t:Functor">functor</a>.</p>
+<p>We will encode our interpreted language as a set of free monadic actions (instructions) represented as a datatype with a functorial shape. And our programs will be just a stack of thes instructions.</p>
+
+<p>The interesting part about <code class="language-plaintext highlighter-rouge">Free f</code> is that <code class="language-plaintext highlighter-rouge">Free f</code> is a <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Control-Monad.html#t:Monad">monad</a> as long as <code class="language-plaintext highlighter-rouge">f</code> is a <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Functor.html#t:Functor">functor</a>:</p>
 
 <div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code><span class="kr">instance</span> <span class="kt">Functor</span> <span class="n">f</span> <span class="o">=&gt;</span> <span class="kt">Monad</span> <span class="p">(</span><span class="kt">Free</span> <span class="n">f</span><span class="p">)</span> <span class="kr">where</span>
   <span class="n">return</span> <span class="o">=</span> <span class="n">pure</span>
@@ -491,20 +501,14 @@
   <span class="kt">Free</span> <span class="n">m</span> <span class="o">&gt;&gt;=</span> <span class="n">f</span> <span class="o">=</span> <span class="kt">Free</span> <span class="p">((</span><span class="o">&gt;&gt;=</span> <span class="n">f</span><span class="p">)</span> <span class="o">&lt;$&gt;</span> <span class="n">m</span><span class="p">)</span>
 </code></pre></td></tr></tbody></table></div></div>
 
-<p>This will allow us to compose free actions by embedding new layers on the bottom of the stack of layers, which is essential to model domain specific languages.</p>
+<p>This will allow us to compose programs for free<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>. 
+On top of that, do-notation gives us a nice syntax to compose ‘em all!</p>
 
-<p>In practise, the user builds a free monad stacking layers of their domain specific language modelled as a functor. Later, it executes <code class="language-plaintext highlighter-rouge">iter</code> (or its corresponding applicative and monadic version) to interpret and collapse each layer into a single (effectful) value.</p>
-
-<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="n">iter</span> <span class="o">::</span> <span class="kt">Functor</span> <span class="n">f</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">a</span>
-<span class="n">iterA</span> <span class="o">::</span> <span class="p">(</span><span class="kt">Applicative</span> <span class="n">p</span><span class="p">,</span> <span class="kt">Functor</span> <span class="n">f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="p">(</span><span class="n">p</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">p</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">p</span> <span class="n">a</span> 
-<span class="n">iterM</span> <span class="o">::</span> <span class="p">(</span><span class="kt">Monad</span> <span class="n">m</span><span class="p">,</span> <span class="kt">Functor</span> <span class="n">f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="p">(</span><span class="n">m</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">m</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">m</span> <span class="n">a</span> 
-</code></pre></td></tr></tbody></table></div></div>
-
-<p>In the next section, we will see how to put that into practise.</p>
+<p>In the next section, we will finally see how to put this into practise.</p>
 
 <h1 id="solving-the-assignment">Solving the assignment</h1>
 
-<p>When modeling an embedded domain specific language (eDSL) using free monads, you usually divide the problem in two parts:</p>
+<p>When modeling a language<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup> using free monads, you usually divide the problem in two parts:</p>
 <ol>
   <li>Define your language.</li>
   <li>Define the interpreter for your language.</li>
@@ -530,7 +534,7 @@
   <span class="o">|</span> <span class="kt">Recv</span> <span class="kt">Channel</span> <span class="n">next</span>
   <span class="o">|</span> <span class="kt">Fork</span> <span class="p">(</span><span class="kt">ByteCode</span> <span class="nb">()</span><span class="p">)</span> <span class="p">(</span><span class="kt">Future</span> <span class="nb">()</span> <span class="o">-&gt;</span> <span class="n">next</span><span class="p">)</span>
   <span class="o">|</span> <span class="kt">Await</span> <span class="p">(</span><span class="kt">Future</span> <span class="nb">()</span><span class="p">)</span> <span class="n">next</span>
-  <span class="kr">deriving</span> <span class="n">stock</span> <span class="p">(</span><span class="kt">Functor</span><span class="p">)</span>
+  <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Functor</span><span class="p">)</span>
 
 <span class="kr">data</span> <span class="kt">Value</span>
   <span class="o">=</span> <span class="kt">B</span> <span class="kt">Bool</span>
@@ -569,7 +573,7 @@
 <div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="o">$</span><span class="p">(</span><span class="n">makeFree</span> <span class="n">''ByteCodeF</span><span class="p">)</span>
 </code></pre></td></tr></tbody></table></div></div>
 
-<p>which generates the following code</p>
+<p>which generates the following code<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">4</a></sup></p>
 
 <div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9</pre></td><td class="code"><pre class="highlight"><code><span class="n">lit</span>      <span class="o">::</span> <span class="kt">Value</span>                         <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
 <span class="n">load</span>     <span class="o">::</span> <span class="kt">Var</span>                           <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
@@ -582,50 +586,37 @@
 <span class="n">await</span>    <span class="o">::</span> <span class="kt">Async</span> <span class="nb">()</span>                      <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
 </code></pre></td></tr></tbody></table></div></div>
 
-<blockquote>
-  <p>The actual signatures use <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#t:MonadFree">MonadFree</a> which is an mtl-style class that allow us to compose <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Trans-Free.html#t:FreeT">FreeT</a> with other monad transformers. We were able to monomorphize the return value <code class="language-plaintext highlighter-rouge">MonadFree f m =&gt; m ~ Free ByteCodeF</code> thanks to the instance <code class="language-plaintext highlighter-rouge">Functor f =&gt; MonadFree f (Free f)</code>.</p>
-</blockquote>
+<p>Once we have the basic building blocks of our language, we can start building programs by composing smaller programs using monadic composition!</p>
 
-<p>Once we have the basic building blocks of our language, we can start building more complex primitives using monadic composition!</p>
-
-<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22</pre></td><td class="code"><pre class="highlight"><code><span class="n">loopN</span> <span class="o">::</span> <span class="kt">Integer</span> <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
+<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20</pre></td><td class="code"><pre class="highlight"><code><span class="n">loopN</span> <span class="o">::</span> <span class="kt">Integer</span> <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="nb">()</span>
 <span class="n">loopN</span> <span class="n">until</span> <span class="o">=</span> <span class="kr">do</span>
-
+  <span class="kr">let</span> <span class="p">{</span><span class="n">n</span> <span class="o">=</span> <span class="s">"n"</span><span class="p">;</span> <span class="n">i</span> <span class="o">=</span> <span class="s">"i"</span><span class="p">}</span>
   <span class="n">litI</span> <span class="n">until</span>
   <span class="n">write</span> <span class="n">n</span>
   <span class="n">litI</span> <span class="mi">1</span>
   <span class="n">write</span> <span class="n">i</span>
   <span class="n">loop</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span> <span class="o">++</span><span class="p">)</span>
 
-  <span class="kr">where</span>
+<span class="p">(</span><span class="o">&lt;</span><span class="p">)</span> <span class="n">i</span> <span class="n">n</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="n">load</span> <span class="n">n</span>
+  <span class="n">load</span> <span class="n">i</span>
+  <span class="n">lessThan</span>
+  <span class="n">ret</span>
   
-      <span class="p">(</span><span class="o">&lt;</span><span class="p">)</span> <span class="n">i</span> <span class="n">n</span> <span class="o">=</span> <span class="kr">do</span>
-      <span class="n">load</span> <span class="n">n</span>
-      <span class="n">load</span> <span class="n">i</span>
-      <span class="n">lessThan</span>
-      <span class="n">ret</span>
-  
-      <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="n">i</span> <span class="o">=</span> <span class="kr">do</span>
-      <span class="n">litI</span> <span class="mi">1</span>
-      <span class="n">load</span> <span class="n">i</span>
-      <span class="n">add</span>
-      <span class="n">write</span> <span class="n">i</span>
+<span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="n">i</span> <span class="o">=</span> <span class="kr">do</span>
+  <span class="n">litI</span> <span class="mi">1</span>
+  <span class="n">load</span> <span class="n">i</span>
+  <span class="n">add</span>
+  <span class="n">write</span> <span class="n">i</span>
 </code></pre></td></tr></tbody></table></div></div>
 
-<h2 id="interpreting-our-edsl">Interpreting our eDSL</h2>
+<h2 id="interpreting-our-program">Interpreting our program</h2>
 
 <p>Now that we have the building blocks to construct our domain specific programs, it is only remaining to implement an interpreter to evaluate this embedded DSL in our host language Haskell.</p>
 
-<p>The interpreter is usually implemented using <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#v:iterM">iterM</a>:</p>
+<p>The interpreter is usually implemented using <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#v:iterM">iterM</a>, which allows us to collapse our <code class="language-plaintext highlighter-rouge">Free f</code> into a monadic value <code class="language-plaintext highlighter-rouge">m a</code> by providing a function <code class="language-plaintext highlighter-rouge">f (m a) -&gt; m a</code> (usually called an <em>algebra</em>) that operates on a single layer of our free monad. If you are familiar with recursion schemes, <code class="language-plaintext highlighter-rouge">iterm</code> is a specialization of <a href="https://hackage.haskell.org/package/recursion-schemes-5.2.2.2/docs/Data-Functor-Foldable.html#v:cataA">cataA</a>.</p>
 
-<div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="n">iterM</span> <span class="o">::</span> <span class="p">(</span><span class="kt">Monad</span> <span class="n">m</span><span class="p">,</span> <span class="kt">Functor</span> <span class="n">f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="p">(</span><span class="n">m</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">m</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">m</span> <span class="n">a</span>
-<span class="n">iterM</span> <span class="kr">_</span>   <span class="p">(</span><span class="kt">Pure</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">return</span> <span class="n">x</span>
-<span class="n">iterM</span> <span class="n">phi</span> <span class="p">(</span><span class="kt">Free</span> <span class="n">f</span><span class="p">)</span> <span class="o">=</span> <span class="n">phi</span> <span class="p">(</span><span class="n">iterM</span> <span class="n">phi</span> <span class="o">&lt;$&gt;</span> <span class="n">f</span><span class="p">)</span>
-</code></pre></td></tr></tbody></table></div></div>
-
-<p><code class="language-plaintext highlighter-rouge">iterM</code> allow us to collapse our <code class="language-plaintext highlighter-rouge">Free f</code> into a monadic value <code class="language-plaintext highlighter-rouge">m a</code> by providing a function <code class="language-plaintext highlighter-rouge">f (m a) -&gt; m a</code> (usually called an <em>algebra</em>) that operates on a single layer of our free monad. If you are familiar with recursion schemes, <code class="language-plaintext highlighter-rouge">iterm</code> is a specialization of <a href="https://hackage.haskell.org/package/recursion-schemes-5.2.2.2/docs/Data-Functor-Foldable.html#v:cataA">cataA</a>.</p>
-
-<p>This may sound confusing at first, but it is easier than it looks like. So, let’s see how it would look like in our example. First of all, we need to choose the monadic value <code class="language-plaintext highlighter-rouge">m</code>. For our interpreted language, we choose <code class="language-plaintext highlighter-rouge">m ~ Interpreter</code></p>
+<p>This may sound confusing at first, but it is easier than it sounds. So, let’s see how it would look like in our example. First of all, we need to choose the monadic value <code class="language-plaintext highlighter-rouge">m</code>. For our interpreted language, we choose <code class="language-plaintext highlighter-rouge">m ~ Interpreter</code></p>
 
 <div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14</pre></td><td class="code"><pre class="highlight"><code><span class="kr">newtype</span> <span class="kt">Interpreter</span> <span class="n">a</span> <span class="o">=</span> <span class="kt">Interpreter</span> 
   <span class="p">{</span> <span class="n">runInterpreter</span> <span class="o">::</span> <span class="kt">StateT</span> <span class="kt">Ctx</span> <span class="p">(</span><span class="kt">ExceptT</span> <span class="kt">Err</span> <span class="kt">IO</span><span class="p">)</span> <span class="n">a</span> <span class="p">}</span>
@@ -643,9 +634,8 @@
   <span class="o">|</span> <span class="kt">WhoNeedsTypes</span>
 </code></pre></td></tr></tbody></table></div></div>
 
-<p>where <code class="language-plaintext highlighter-rouge">Ctx</code> is the current context of our program i.e. the state of the stack and the memory registers.</p>
-
-<p>Then, we specialize <code class="language-plaintext highlighter-rouge">iterM</code> to our example</p>
+<p>where <code class="language-plaintext highlighter-rouge">Ctx</code> is the current context of our program i.e. the state of the stack and the memory registers. 
+Then, we specialize <code class="language-plaintext highlighter-rouge">iterM</code> to our example</p>
 
 <div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="c1">--       &lt;---------------- algebra -----------------&gt;</span>
 <span class="n">iterm</span> <span class="o">::</span> <span class="p">(</span><span class="kt">ByteCodeF</span> <span class="p">(</span><span class="kt">Interpreter</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="n">a</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">ByteCode</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">Interpreter</span> <span class="n">a</span>
@@ -706,7 +696,7 @@
 
 <p>So far, we have built the following components:</p>
 <ol>
-  <li>An embedded stack-based language in Haskell with primitives like: <code class="language-plaintext highlighter-rouge">lit</code>, <code class="language-plaintext highlighter-rouge">load</code>, <code class="language-plaintext highlighter-rouge">write</code>, <code class="language-plaintext highlighter-rouge">loop</code> …</li>
+  <li>An (embedded) stack-based language in Haskell with primitives like: <code class="language-plaintext highlighter-rouge">lit</code>, <code class="language-plaintext highlighter-rouge">load</code>, <code class="language-plaintext highlighter-rouge">write</code>, <code class="language-plaintext highlighter-rouge">loop</code> …</li>
   <li>An interpreter for that language: <code class="language-plaintext highlighter-rouge">interpret</code> and <code class="language-plaintext highlighter-rouge">runByteCode</code>.</li>
 </ol>
 
@@ -738,13 +728,28 @@
 
 <p>The following <code class="language-plaintext highlighter-rouge">program</code> creates two asynchronous tasks that after a period of time, return the integer <code class="language-plaintext highlighter-rouge">1</code> through an asynchronous channel. The main program waits for these two asynchronous tasks to finish and outputs the sum of the results of the asynchronous tasks.</p>
 
-<p>The source code from the examples can be found <a href="https://github.com/monadplus/free-monads-examples">here</a>.</p>
-
 <h1 id="conclusion">Conclusion</h1>
 
 <p>In this post, we have introduced free monads and how they can be used to implement embedded domain specific languages. In particular, we have seen how to embed a stack-based language in Haskell. To see other examples of domain specific languages, we refer the reader to the <a href="https://github.com/ekmett/free/tree/master/examples">examples of the free package</a>.</p>
 
 <p>This post only covered a half of the <a href="https://hackage.haskell.org/package/free">free</a> package. In the next post of this series, we’ll explore the other half: church encoding, applicative free, cofree…</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>The term “free” in the context of CT refers to the fact that we have not added structure to the original object. Don’t confuse the term with the adjective free: “costing nothing”. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>Pun intended. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p>Technically you are defining an embedded domain specific language (eDSL). <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:4" role="doc-endnote">
+      <p>The actual signatures use <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#t:MonadFree">MonadFree</a> which is an mtl-style class that allow us to compose <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Trans-Free.html#t:FreeT">FreeT</a> with other monad transformers. We were able to monomorphize the return value <code class="language-plaintext highlighter-rouge">MonadFree f m =&gt; m ~ Free ByteCodeF</code> thanks to the instance <code class="language-plaintext highlighter-rouge">Functor f =&gt; MonadFree f (Free f)</code>. <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
 
 
       
@@ -1013,7 +1018,7 @@
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-1"> <a class="nav-link" href="#free-monads"> <span class="nav-number">1</span> <span class="nav-text">Free monads</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#solving-the-assignment"> <span class="nav-number">2</span> <span class="nav-text">Solving the assignment</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#defining-our-edsl"> <span class="nav-number">2.1</span> <span class="nav-text">Defining our eDSL</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#interpreting-our-edsl"> <span class="nav-number">2.2</span> <span class="nav-text">Interpreting our eDSL</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#all-together"> <span class="nav-number">2.3</span> <span class="nav-text">All together</span> </a> </li> </ol> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#conclusion"> <span class="nav-number">3</span> <span class="nav-text">Conclusion</span> </a> </li>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#free-monads"> <span class="nav-number">1</span> <span class="nav-text">Free monads</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#free-monads-encoded-in-haskell"> <span class="nav-number">1.1</span> <span class="nav-text">Free monads encoded in Haskell</span> </a> </li> </ol> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#solving-the-assignment"> <span class="nav-number">2</span> <span class="nav-text">Solving the assignment</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#defining-our-edsl"> <span class="nav-number">2.1</span> <span class="nav-text">Defining our eDSL</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#interpreting-our-program"> <span class="nav-number">2.2</span> <span class="nav-text">Interpreting our program</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#all-together"> <span class="nav-number">2.3</span> <span class="nav-text">All together</span> </a> </li> </ol> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#conclusion"> <span class="nav-number">3</span> <span class="nav-text">Conclusion</span> </a> </li>
     </ol>
   </div>
             
@@ -1045,7 +1050,7 @@
   
   
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
