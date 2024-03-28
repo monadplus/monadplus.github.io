@@ -464,7 +464,7 @@
 
   <p>After finishing my master’s degree, I applied to several companies I was interested in. During one of the selection processes, the interviewer asked me to do the following exercise:</p>
 
-<p><em>“Write a stack-based interpreted language (byte code) that includes: literals, arithmetic operations, variables, and control flow primitives. As a bonus, add asynchronous primitives such as fork and await.”</em></p>
+<p><em>“Write a stack-based interpreted language that includes: literals, arithmetic operations, variables, and control flow primitives. As a bonus, add asynchronous primitives such as fork and await.”</em></p>
 
 <p>Fortunately, I was already familiar with the assignment because I implemented a <a href="https://github.com/monadplus/CPP-lang">statically typed programming language</a> a year ago. Consequently, I decided to take this as a chance and do something different than the rest of the candidates. Spoiler: haskell + free monads!</p>
 
@@ -474,13 +474,11 @@
 
 <h1 id="free-monads">Free monads</h1>
 
-<p>The concept of <em>free monad</em> comes from the field of category theory (CT). The <a href="https://ncatlab.org/nlab/show/free+monad">formal definition</a> is hard to grasp without a background in CT. In terms of programming, a more pragmatic definition is</p>
+<p>The concept of a <em>free monad</em> comes from the field of Category Theory (CT). The <a href="https://ncatlab.org/nlab/show/free+monad">formal definition</a> is hard to grasp without a background in CT. In terms of programming, a more pragmatic definition is</p>
 
 <p><strong>Def</strong>. For any functor $f$, there exists a <em>uniquely</em> determined monad called the <em>free monad</em> of the functor $f$ <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup></p>
 
-<p>In plain words, we can transform <em>any</em> functor $f$ into a monad $m$.</p>
-
-<p>You may be wondering how is that useful to write an interpreter in Haskell. You’ll see in a bit!.</p>
+<p>In plain words, we can transform <em>any</em> functor $f$ into a monad…And you may be wondering “how is that useful to write an interpreter in Haskell? You’ll see in a bit, stick with me.</p>
 
 <h2 id="free-monads-encoded-in-haskell">Free monads encoded in Haskell</h2>
 
@@ -489,7 +487,7 @@
 <div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="kr">data</span> <span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span> <span class="o">=</span> <span class="kt">Pure</span> <span class="n">a</span> <span class="o">|</span> <span class="kt">Free</span> <span class="p">(</span><span class="n">f</span> <span class="p">(</span><span class="kt">Free</span> <span class="n">f</span> <span class="n">a</span><span class="p">))</span>
 </code></pre></td></tr></tbody></table></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">Free f</code> is simply a stack of layers <code class="language-plaintext highlighter-rouge">f</code> on top of a value <code class="language-plaintext highlighter-rouge">a</code>.</p>
+<p>You can think of <code class="language-plaintext highlighter-rouge">Free f</code>  as a stack of layers <code class="language-plaintext highlighter-rouge">f</code> on top of a value <code class="language-plaintext highlighter-rouge">a</code>.</p>
 
 <p>We will encode our interpreted language as a set of free monadic actions (instructions) represented as a datatype with a functorial shape. And our programs will be just a stack of thes instructions.</p>
 
@@ -614,9 +612,9 @@ On top of that, do-notation gives us a nice syntax to compose ‘em all!</p>
 
 <p>Now that we have the building blocks to construct our domain specific programs, it is only remaining to implement an interpreter to evaluate this embedded DSL in our host language Haskell.</p>
 
-<p>The interpreter is usually implemented using <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#v:iterM">iterM</a>, which allows us to collapse our <code class="language-plaintext highlighter-rouge">Free f</code> into a monadic value <code class="language-plaintext highlighter-rouge">m a</code> by providing a function <code class="language-plaintext highlighter-rouge">f (m a) -&gt; m a</code> (usually called an <em>algebra</em>) that operates on a single layer of our free monad. If you are familiar with recursion schemes, <code class="language-plaintext highlighter-rouge">iterm</code> is a specialization of <a href="https://hackage.haskell.org/package/recursion-schemes-5.2.2.2/docs/Data-Functor-Foldable.html#v:cataA">cataA</a>.</p>
+<p>The interpreter is usually implemented using <a href="https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#v:iterM">iterM</a>, which allows us to collapse our <code class="language-plaintext highlighter-rouge">Free f</code> into a monadic value <code class="language-plaintext highlighter-rouge">m a</code> by providing a function <code class="language-plaintext highlighter-rouge">f (m a) -&gt; m a</code> (usually called an <em>algebra</em>) that operates on a single layer of our free monad. If you are familiar with recursion schemes, <code class="language-plaintext highlighter-rouge">iterM</code> is a specialization of <a href="https://hackage.haskell.org/package/recursion-schemes-5.2.2.2/docs/Data-Functor-Foldable.html#v:cataA">cataA</a>. This may sound confusing at first, but it is easier than it sounds.</p>
 
-<p>This may sound confusing at first, but it is easier than it sounds. So, let’s see how it would look like in our example. First of all, we need to choose the monadic value <code class="language-plaintext highlighter-rouge">m</code>. For our interpreted language, we choose <code class="language-plaintext highlighter-rouge">m ~ Interpreter</code></p>
+<p>First of all, we need to choose the monadic value <code class="language-plaintext highlighter-rouge">m</code>. For our interpreted language, we choose <code class="language-plaintext highlighter-rouge">m ~ Interpreter</code></p>
 
 <div class="language-haskell highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14</pre></td><td class="code"><pre class="highlight"><code><span class="kr">newtype</span> <span class="kt">Interpreter</span> <span class="n">a</span> <span class="o">=</span> <span class="kt">Interpreter</span> 
   <span class="p">{</span> <span class="n">runInterpreter</span> <span class="o">::</span> <span class="kt">StateT</span> <span class="kt">Ctx</span> <span class="p">(</span><span class="kt">ExceptT</span> <span class="kt">Err</span> <span class="kt">IO</span><span class="p">)</span> <span class="n">a</span> <span class="p">}</span>
@@ -800,6 +798,10 @@ Then, we specialize <code class="language-plaintext highlighter-rouge">iterM</co
         <div class="post-nav" id="post-nav-id">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/modding/2024/03/28/gba-mod/" rel="next" title="Modding a Game Boy Advance">
+                <i class="fa fa-chevron-left"></i> Modding a Game Boy Advance
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
@@ -896,7 +898,7 @@ Then, we specialize <code class="language-plaintext highlighter-rouge">iterM</co
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -907,7 +909,7 @@ Then, we specialize <code class="language-plaintext highlighter-rouge">iterM</co
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">categories</span>
               </a>
             </div>
@@ -918,7 +920,7 @@ Then, we specialize <code class="language-plaintext highlighter-rouge">iterM</co
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

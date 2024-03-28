@@ -1,6 +1,146 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-03-03T12:57:46+01:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">Monad+</title><author><name>Arnau Abella</name></author><entry><title type="html">Free monads in the real world</title><link href="http://localhost:4000/haskell/2022/04/19/free-interpreter/" rel="alternate" type="text/html" title="Free monads in the real world" /><published>2022-04-19T00:00:00+02:00</published><updated>2022-04-19T00:00:00+02:00</updated><id>http://localhost:4000/haskell/2022/04/19/free-interpreter</id><content type="html" xml:base="http://localhost:4000/haskell/2022/04/19/free-interpreter/">&lt;p&gt;After finishing my master’s degree, I applied to several companies I was interested in. During one of the selection processes, the interviewer asked me to do the following exercise:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-03-28T21:15:08+01:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">Monad+</title><author><name>Arnau Abella</name></author><entry><title type="html">Modding a Game Boy Advance</title><link href="http://localhost:4000/modding/2024/03/28/gba-mod/" rel="alternate" type="text/html" title="Modding a Game Boy Advance" /><published>2024-03-28T00:00:00+01:00</published><updated>2024-03-28T00:00:00+01:00</updated><id>http://localhost:4000/modding/2024/03/28/gba-mod</id><content type="html" xml:base="http://localhost:4000/modding/2024/03/28/gba-mod/">&lt;p&gt;How to restore and mod a Game Boy Advance (GBA) step by step.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;“Write a stack-based interpreted language (byte code) that includes: literals, arithmetic operations, variables, and control flow primitives. As a bonus, add asynchronous primitives such as fork and await.”&lt;/em&gt;&lt;/p&gt;
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;img src=&quot;/assets/images/gba_mod/GBA_1.jpg&quot; alt=&quot;Two modded GBA front view&quot; /&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;img src=&quot;/assets/images/gba_mod/GBA_2.jpg&quot; alt=&quot;Two modded GBA back view&quot; /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;preparation&quot;&gt;Preparation&lt;/h2&gt;
+
+&lt;p&gt;We’ll need the following material:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;A donor GBA: the internals must be in good shape. The exterior state (including screen) doesn’t matter because we are going to replace it.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://funnyplaying.com/products/3-0-inch-ips-agb-laminated-kit&quot;&gt;3.0 Inch IPS AGB Laminated Kit: Display + Shell&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://funnyplaying.com/products/gba-li-ion-rechargeable-battery-typec-module&quot;&gt;GBA Li-Ion Rechargeable Battery USB-C Module&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://funnyplaying.com/products/clear-gba-speaker&quot;&gt;Clear GBA Speaker&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://funnyplaying.com/products/replacement-silicone-pads-for-gameboy-advance&quot;&gt;GBA Replacement Silicone Pads&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://funnyplaying.com/products/agb-custom-buttons&quot;&gt;GBA Custom Buttons&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.ifixit.com/products/mako-driver-kit-64-precision-bits&quot;&gt;Screwdrivers (Philips, tri-point and flathead)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Soldering iron, flux, and tin wire.&lt;/li&gt;
+  &lt;li&gt;Isopropyl alcohol 99%, brush, and microfiber cloth&lt;/li&gt;
+  &lt;li&gt;Kopton tape&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;preparing-the-motherboard&quot;&gt;Preparing the motherboard&lt;/h2&gt;
+
+&lt;p&gt;The first step is to retrieve the motherboard from our donor GBA.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328123418.jpg&quot; alt=&quot;GBA backside&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Open the back cover of your GBA by unscrewing the 6 tri-point screws and the philips screw on the bottom of the battery compartment.
+I suggest using a flathead tip for the philips screw because it’s quite soft and easy to deform its shape.&lt;/p&gt;
+
+&lt;p&gt;The motherboard may be a bit dirty, but do not worry, we’ll clean it later.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328123732.jpg&quot; alt=&quot;motherboard backside&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The Game Boy Advance had several hardware revisions during the years, but the relevant change for us is the connector for the display.
+The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3.0 Inch IPS AGB Laminated Kit&lt;/code&gt; is compatible with both a 32-pin and a 40-pin connector screen connector.
+My GBA has revision &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;10 1-1&lt;/code&gt; (see under the cartridge), and uses the 32-pin connector. If your revision starts with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt; that means that your GBA uses the 40-pin connector. This information will be used in a following step.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328123858.jpg&quot; alt=&quot;GBA motherboard backside&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, we need to detach the display connector. Release the plastic holder by pulling up both sides and gently release the orange ribbon from the connector. Then, unscrew the 2 or 3 philips screws that hold the motherboard to the front shell.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328123943.jpg&quot; alt=&quot;GBA motherboard frontside&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Before cleaning the motherboard, we’ll replace the speaker by the next one.
+Desolder the old one and solder the new one.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328124830.jpg&quot; alt=&quot;GBA speaker&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, we can clean all the dust and oxide from the motherboard. We’ll spray the motherboard with the isopropyl alcohol and brush the surface gently. Clean both sides of the motherboard. Do not worry, the isopropyl alcohol will evaporate and will not damage the electronic components.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328125207.jpg&quot; alt=&quot;GBA clean motherboard&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;modding-our-gba&quot;&gt;Modding our GBA&lt;/h2&gt;
+
+&lt;p&gt;The second step is to build a functional GBA on our new shell and IPS display.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328125355.jpg&quot; alt=&quot;GBA shell&quot; /&gt; 
+&lt;img src=&quot;/assets/images/gba_mod/IMG20240328125641.jpg&quot; alt=&quot;GBA IPS display&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;First, we’ll prepare our IPS display by soldering the wires that will connect to the motherboard to control the OSD menu of the display.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328130208.jpg&quot; alt=&quot;GBA IPS display ribbon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then, I recommend covering with Kopton tape the pins of the connector that we are not going to use. In my case, the 40-pin connector.&lt;/p&gt;
+
+&lt;p&gt;Next, we’ll remove the plastic cover from the display and place the display on our front shell.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328132236.jpg&quot; alt=&quot;GBA front shell ribbon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then, we’ll attach the display ribbon to the display board. There’s a small lid that has to be open before inserting the ribbon and has to be closed afterwards. I recommend sticking the board to the screen’s backplate with double-sided tape. The touch sensor must be attached to the bottom of the screen with Kopton tape. Don’t forget to place the holding bracket to fix the screen in place.&lt;/p&gt;
+
+&lt;p&gt;The next step is to solder the wires to the GBA motherboard.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240327155543.jpg&quot; alt=&quot;GBA wire soldering&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The above picture is from another mod (I forgot to take pictures) but the pins to solder the wires are the same:
+&lt;strong&gt;S&lt;/strong&gt; must be soldered to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TP2&lt;/code&gt;, &lt;strong&gt;L&lt;/strong&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TP9&lt;/code&gt;, and &lt;strong&gt;R&lt;/strong&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TP8&lt;/code&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Some IPS kits require 40-pins motherboards to remove the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C54&lt;/code&gt; capacitor.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328130900.jpg&quot; alt=&quot;GBA back shell ribbon&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The above picture is just an example on how the ribbon is connected to the motherboard, it is missing the folding and twisting of the ribbon.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Finally, we need to connect the 32-pin connector to the GBA motherboard. In order to do that, you have to twist the ribbon with the 32-pin connector 180°, and connect it to the GBA motherboard.&lt;/p&gt;
+
+&lt;p&gt;It is time to put the buttons and pads on their respective places. Both are designed to only fit in a specific position and orientation. Don’t forget to insert the power led plastic diffuser.&lt;/p&gt;
+
+&lt;p&gt;The next step is the most challenging part of the process, so stay calm and repeat it as many times as needed.
+Fold both parts by the ribbon to place the motherboard on top of the frontside shell. Make sure that the speaker is properly placed and the wires are not blocking the contact between the buttons and the motherboard pats. Using Kopton tape to fix some of the moving parts may help during the process.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328135250.jpg&quot; alt=&quot;GBA motherboard mounted on front shell&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Screw the motherboard to the front shell and make sure everything fits by checking that the shell makes contact with the audio jack, the volume wheel and the top external connector.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328140029.jpg&quot; alt=&quot;GBA backside shell closed&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally, put the remaining buttons (bumpers, triggers, and power switch cover) on the shell and put the back shell on top of it. Make sure to screw the shell so all connectors make proper contact before testing.&lt;/p&gt;
+
+&lt;p&gt;Now it is a good time to test your GBA. Put the batteries back, turn it on and test that all buttons still work.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328140729.jpg&quot; alt=&quot;GBA screen test 1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can test the touch sensor by pressing the bottom of the screen. A single-tap should increase the brightness and a long-tap should display the OSD menu (see &lt;a href=&quot;https://www.youtube.com/shorts/IqRYh-b76Pw&quot;&gt;demo&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328140735.jpg&quot; alt=&quot;GBA screen test 2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can test the soldered controllers by holding ‘select’ for 2 seconds to display the OSD menu and using the triggers to increase and decrease the different values (see &lt;a href=&quot;https://www.youtube.com/shorts/-Ox0G2bGdoY&quot;&gt;demo&lt;/a&gt;).&lt;/p&gt;
+
+&lt;h2 id=&quot;rechargeable-battery&quot;&gt;Rechargeable battery&lt;/h2&gt;
+
+&lt;p&gt;The final step is to replace the AA batteries by a rechargeable USB-C battery.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/gba_mod/IMG20240328140550.jpg&quot; alt=&quot;GBA rechargeable battery&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;First, attach the heatsink to the battery pcb and connect to battery power connector to the board.
+Then, remove the left contact from the GBA AA batteries slot. 
+I used the flathead screwdriver to push from the bottom of the contact.
+And finally put the rechargeable battery in the batteries compartment.
+Make sure the battery cable is placed inside the left contact cavity.
+Put the cover. You may need to move the battery a bit to make it fit in the right place to close the cover.&lt;/p&gt;
+
+&lt;p&gt;Time to enjoy your modded GBA!&lt;/p&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;Resources&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Retro gaming provider: &lt;a href=&quot;https://funnyplaying.com/&quot;&gt;https://funnyplaying.com/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Video guide (from another author): &lt;a href=&quot;https://www.youtube.com/watch?v=BpX-2aeTXL4&quot;&gt;https://www.youtube.com/watch?v=BpX-2aeTXL4&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Arnau Abella</name></author><category term="Modding" /><category term="Game Boy Advance" /><category term="Hardware" /><category term="Retro Gaming" /><summary type="html">How to restore and mod a Game Boy Advance (GBA) step by step.</summary></entry><entry><title type="html">Free monads in the real world</title><link href="http://localhost:4000/haskell/2022/04/19/free-interpreter/" rel="alternate" type="text/html" title="Free monads in the real world" /><published>2022-04-19T00:00:00+02:00</published><updated>2022-04-19T00:00:00+02:00</updated><id>http://localhost:4000/haskell/2022/04/19/free-interpreter</id><content type="html" xml:base="http://localhost:4000/haskell/2022/04/19/free-interpreter/">&lt;p&gt;After finishing my master’s degree, I applied to several companies I was interested in. During one of the selection processes, the interviewer asked me to do the following exercise:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;“Write a stack-based interpreted language that includes: literals, arithmetic operations, variables, and control flow primitives. As a bonus, add asynchronous primitives such as fork and await.”&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;Fortunately, I was already familiar with the assignment because I implemented a &lt;a href=&quot;https://github.com/monadplus/CPP-lang&quot;&gt;statically typed programming language&lt;/a&gt; a year ago. Consequently, I decided to take this as a chance and do something different than the rest of the candidates. Spoiler: haskell + free monads!&lt;/p&gt;
 
@@ -10,13 +150,11 @@
 
 &lt;h1 id=&quot;free-monads&quot;&gt;Free monads&lt;/h1&gt;
 
-&lt;p&gt;The concept of &lt;em&gt;free monad&lt;/em&gt; comes from the field of category theory (CT). The &lt;a href=&quot;https://ncatlab.org/nlab/show/free+monad&quot;&gt;formal definition&lt;/a&gt; is hard to grasp without a background in CT. In terms of programming, a more pragmatic definition is&lt;/p&gt;
+&lt;p&gt;The concept of a &lt;em&gt;free monad&lt;/em&gt; comes from the field of Category Theory (CT). The &lt;a href=&quot;https://ncatlab.org/nlab/show/free+monad&quot;&gt;formal definition&lt;/a&gt; is hard to grasp without a background in CT. In terms of programming, a more pragmatic definition is&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Def&lt;/strong&gt;. For any functor $f$, there exists a &lt;em&gt;uniquely&lt;/em&gt; determined monad called the &lt;em&gt;free monad&lt;/em&gt; of the functor $f$ &lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
-&lt;p&gt;In plain words, we can transform &lt;em&gt;any&lt;/em&gt; functor $f$ into a monad $m$.&lt;/p&gt;
-
-&lt;p&gt;You may be wondering how is that useful to write an interpreter in Haskell. You’ll see in a bit!.&lt;/p&gt;
+&lt;p&gt;In plain words, we can transform &lt;em&gt;any&lt;/em&gt; functor $f$ into a monad…And you may be wondering “how is that useful to write an interpreter in Haskell? You’ll see in a bit, stick with me.&lt;/p&gt;
 
 &lt;h2 id=&quot;free-monads-encoded-in-haskell&quot;&gt;Free monads encoded in Haskell&lt;/h2&gt;
 
@@ -25,7 +163,7 @@
 &lt;div class=&quot;language-haskell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Free&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Pure&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Free&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Free&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Free f&lt;/code&gt; is simply a stack of layers &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;f&lt;/code&gt; on top of a value &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;a&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;You can think of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Free f&lt;/code&gt;  as a stack of layers &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;f&lt;/code&gt; on top of a value &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;a&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;We will encode our interpreted language as a set of free monadic actions (instructions) represented as a datatype with a functorial shape. And our programs will be just a stack of thes instructions.&lt;/p&gt;
 
@@ -150,9 +288,9 @@ On top of that, do-notation gives us a nice syntax to compose ‘em all!&lt;/p&g
 
 &lt;p&gt;Now that we have the building blocks to construct our domain specific programs, it is only remaining to implement an interpreter to evaluate this embedded DSL in our host language Haskell.&lt;/p&gt;
 
-&lt;p&gt;The interpreter is usually implemented using &lt;a href=&quot;https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#v:iterM&quot;&gt;iterM&lt;/a&gt;, which allows us to collapse our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Free f&lt;/code&gt; into a monadic value &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;m a&lt;/code&gt; by providing a function &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;f (m a) -&amp;gt; m a&lt;/code&gt; (usually called an &lt;em&gt;algebra&lt;/em&gt;) that operates on a single layer of our free monad. If you are familiar with recursion schemes, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;iterm&lt;/code&gt; is a specialization of &lt;a href=&quot;https://hackage.haskell.org/package/recursion-schemes-5.2.2.2/docs/Data-Functor-Foldable.html#v:cataA&quot;&gt;cataA&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The interpreter is usually implemented using &lt;a href=&quot;https://hackage.haskell.org/package/free-5.1.7/docs/Control-Monad-Free.html#v:iterM&quot;&gt;iterM&lt;/a&gt;, which allows us to collapse our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Free f&lt;/code&gt; into a monadic value &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;m a&lt;/code&gt; by providing a function &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;f (m a) -&amp;gt; m a&lt;/code&gt; (usually called an &lt;em&gt;algebra&lt;/em&gt;) that operates on a single layer of our free monad. If you are familiar with recursion schemes, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;iterM&lt;/code&gt; is a specialization of &lt;a href=&quot;https://hackage.haskell.org/package/recursion-schemes-5.2.2.2/docs/Data-Functor-Foldable.html#v:cataA&quot;&gt;cataA&lt;/a&gt;. This may sound confusing at first, but it is easier than it sounds.&lt;/p&gt;
 
-&lt;p&gt;This may sound confusing at first, but it is easier than it sounds. So, let’s see how it would look like in our example. First of all, we need to choose the monadic value &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;m&lt;/code&gt;. For our interpreted language, we choose &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;m ~ Interpreter&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;First of all, we need to choose the monadic value &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;m&lt;/code&gt;. For our interpreted language, we choose &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;m ~ Interpreter&lt;/code&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-haskell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kr&quot;&gt;newtype&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Interpreter&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Interpreter&lt;/span&gt; 
   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;runInterpreter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;StateT&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Ctx&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;ExceptT&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Err&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;IO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
