@@ -36,10 +36,10 @@ Education:
 - BSc in Computer Science at Facultat d'Informàtica de Barcelona ([FIB](https://www.fib.upc.edu/en)).
 - MSc in Computer Science at Universitat Politècnica de Catalunya ([UPC](https://www.fib.upc.edu/))
 
-About my home office:
+About my home office (see [video](https://youtu.be/MkPXJE3-ulg)):
 - I have been working remotely for over 6 years. 
 - I usually work from home for better productivity.
-- My laptop (Thinkpad p14s) is always ready for any activity outside my home.
+- But my laptop is always ready for any consulting in-site.
 
 ![desktop](/assets/images/desktop.jpg) 
 
