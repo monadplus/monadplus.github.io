@@ -90,7 +90,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="haskell, nix, functional programming, blog" />
+  <meta name="keywords" content="Hardware,SFF Case," />
 
 
 
@@ -118,14 +118,22 @@
 
 
 
-<meta name="keywords" content="haskell, nix, functional programming, blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Monad+">
-<meta property="og:url" content="http://localhost:4000/category/">
+<meta name="description" content="Similiar to the previous blog but this time I talk about setup and tunning.">
+<meta name="keywords" content="Hardware, SFF Case">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(another) small form factor PC">
+<meta property="og:url" content="http://localhost:4000/pc/2024/08/03/another-small-case-build/">
 <meta property="og:site_name" content="Monad+">
+<meta property="og:description" content="Similiar to the previous blog but this time I talk about setup and tunning.">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="/assets/images/another_small_case/portrait.jpg">
+<meta property="og:image" content="/assets/images/another_small_case/ram.jpg">
+<meta property="og:image" content="/assets/images/another_small_case/disassembled_2.jpg">
+<meta property="og:image" content="/assets/images/another_small_case/disassembled.jpg">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Monad+">
+<meta name="twitter:title" content="(another) small form factor PC">
+<meta name="twitter:description" content="Similiar to the previous blog but this time I talk about setup and tunning.">
+<meta name="twitter:image" content="/assets/images/another_small_case/portrait.jpg">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -158,7 +166,7 @@
 
 
 
-  <title>Category | Monad+</title>
+  <title>(another) small form factor PC | Monad+</title>
   
 
 
@@ -192,7 +200,7 @@
   
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -327,265 +335,312 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-<section id="posts" class="posts-collapse" hidden>
-  <div class="collection-title">
-    <h2>
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/pc/2024/08/03/another-small-case-build/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arnau Abella">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/images/portrait.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Monad+">
+    </span>
+
     
-    <small>Category</small>
-    </h2>
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+          
+          
+            (another) small form factor PC
+          
+        </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-08-03T00:00:00+02:00">
+                2024-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/PC" itemprop="url" rel="index">
+                    <span itemprop="name">PC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/pc/2024/08/03/another-small-case-build/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="/pc/2024/08/03/another-small-case-build/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 id="hardware">Hardware</h2>
+
+<ul>
+  <li>CPU: AMD Ryzen 7 7800X3D + Thermalright AM5 Contact Frame + Thermal Grizzly Kryonaut</li>
+  <li>GPU: Asus GeForce RTX 4080 Super 16GB GDDR6 Noctua Edition</li>
+  <li>Motherboard: Asus Rog Strix B650E-I</li>
+  <li>Memory: Corsair Vengeance DDR5 2x16GB 6000MHz CL30 AMD EXPO
+    <ul>
+      <li>Replaced by CORSAIR Dominator Titanium DDR5 2x16GB 6000MHz CL30 AMD EXPO</li>
+    </ul>
+  </li>
+  <li>Storage: 2 x SK Hynix Gold P31 2TB M.2 2280 PCIe NVMe Gen3</li>
+  <li>PSU: Cooler Master v850 SFF Gold</li>
+  <li>Case: Cooler Master NR200P MAX</li>
+  <li>Cooling: 280mm AIO with custom tubing</li>
+  <li>Replaced stock fans with 2 x Noctua NF-A14PWM (Top intake)</li>
+  <li>Noctua NF-F12 PWM + Noctua NF-A12x15 PWM chromax (Bottom exhaust)</li>
+</ul>
+
+<p><img src="/assets/images/another_small_case/portrait.jpg" alt="Portrait of the SFF PC" /></p>
+
+<h2 id="building-process-step-by-step">Building process (step by step)</h2>
+
+<p>See <a href="/pc/2024/05/02/small-case-build/">previous blog entry</a> (it’s very similar).</p>
+
+<h2 id="setup--performance-tunning">Setup &amp; performance tunning</h2>
+
+<ol>
+  <li>Boots? Yes</li>
+  <li>Check cpu/gpu/memories/disks are detected</li>
+  <li>Update BIOS to latest version</li>
+  <li>Install Windows 10 (Windows 11 not better)
+    <ul>
+      <li>Corrupted bootable drive iso image; had to burn iso again</li>
+      <li>Something is off, installation couldn’t detect Ethernet</li>
+    </ul>
+  </li>
+  <li>LAN/WIFI/Bluetooth doesn’t work… motherboard RIP?
+    <ul>
+      <li>Missing motherboard drivers; go to website and install drivers; everything works :sweet:</li>
+    </ul>
+  </li>
+  <li>Install chipset and iGPU drivers</li>
+  <li>Install Nvidia drivers</li>
+  <li>Reboot and overclock RAM i.e. enable EXPO (XMP for AMD)
+    <ul>
+      <li>Oooops, PC doesn’t boot</li>
+      <li>Run MemTest86 to see if RAM is OK; RAM is OK</li>
+      <li>Check motherboard QVL list (had to do it before); RAM is on QVL list.. WTF</li>
+      <li>RAM works at 5600MHz but I want &gt;6000MHz</li>
+      <li>Buy another QVL listed RAM; works flawlessly; return previous RAM<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>
+ <img src="/assets/images/another_small_case/ram.jpg" alt="both rams" /></li>
+      <li>Run MemTest86 to validate RAM; Works fine</li>
+    </ul>
+  </li>
+  <li>Check stock CPU &amp; GPU
+    <ul>
+      <li>CPU using Cinebench R23, Prime 95, Super PI, OCCT</li>
+      <li>GPU using Unigine Heaven and Superposition</li>
+      <li>Stock works better than expected. Temps are really good for suck a small case.</li>
+      <li>The 7800x3d and the Noctua 4080SUPER are very efficient</li>
+    </ul>
+  </li>
+  <li>Undervolt CPU without losing performance
+    <ul>
+      <li>Enable PBO2 and tune Curve Optimizer per core (-35 didn’t work as always)</li>
+      <li>Test using:</li>
+    </ul>
+    <ul>
+      <li>Prime 95 Small FFT (both AVX enable and disabled)</li>
+      <li>OCCT Core Cycler</li>
+    </ul>
+  </li>
+  <li>Undervolt GPU
+    <ul>
+      <li>925mV at 2580MHz, +1250 memory clock (12750MHz), and 110% power limit</li>
+      <li>Disable CUDA P2 State using Nvidia Inspector</li>
+    </ul>
+  </li>
+  <li>Benchmark again
+    <ul>
+      <li>Cinebench R23</li>
+      <li>Unigine Superposition</li>
+      <li>3DMark Time Spy Extreme</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="summary">Summary</h2>
+
+<p>You can see that building and tuning this PC has turned out more complex than expected. But I am really happy with the results. The CPU and GPU run 10°C cooler than stock with similar performance (-+5%). Both were really efficient on stock settings but thanks to the undervolting, now I can run the fans at minimum at full throttle. This is a perfect SFF case to be put on top of your desk.</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>Replacing the RAM was a pain in the ass
+<img src="/assets/images/another_small_case/disassembled_2.jpg" alt="Disassembled PC 2" /> 
+<img src="/assets/images/another_small_case/disassembled.jpg" alt="Disassembled PC" /> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/Hardware" rel="tag"># Hardware</a>
+          
+            
+            <a href="/tag/#/SFF%20Case" rel="tag"># SFF Case</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/pc/2024/05/02/small-case-build/" rel="prev" title="Small form factor PC">
+                Small form factor PC <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
   </div>
-
-  
-  
-
-  
-    
-    
-
-    
-      
-
-      
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article" route="/haskell">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/haskell/2022/04/19/free-interpreter/" itemprop="url">
-              
-                <span itemprop="name">Free monads in the real world</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2022-04-19T00:00:00+02:00"
-              content="2022-04-19" >
-          04-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-    
-      
-
-      
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article" route="/haskell">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/haskell/2021/10/14/th/" itemprop="url">
-              
-                <span itemprop="name">Template Haskell; Use Cases</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-10-14T00:00:00+02:00"
-              content="2021-10-14" >
-          10-14
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-    
-      
-
-      
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article" route="/haskell">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/haskell/2021/09/24/fizz-buzz/" itemprop="url">
-              
-                <span itemprop="name">The Fizz Buzz problem</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-09-24T00:00:00+02:00"
-              content="2021-09-24" >
-          09-24
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-    
-      
-
-      
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article" route="/haskell">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/haskell/nix/2020/03/10/running-haskell-scripts/" itemprop="url">
-              
-                <span itemprop="name">Running a Haskell Script without GHC</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-03-10T00:00:00+01:00"
-              content="2020-03-10" >
-          03-10
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-    
-  
-    
-    
-
-    
-      
-
-      
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article" route="/nix">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/haskell/nix/2020/03/10/running-haskell-scripts/" itemprop="url">
-              
-                <span itemprop="name">Running a Haskell Script without GHC</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-03-10T00:00:00+01:00"
-              content="2020-03-10" >
-          03-10
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-    
-  
-    
-    
-
-    
-      
-
-      
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article" route="/Modding">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/modding/2024/03/28/gba-mod/" itemprop="url">
-              
-                <span itemprop="name">Modding a Game Boy Advance</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2024-03-28T00:00:00+01:00"
-              content="2024-03-28" >
-          03-28
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-    
-  
-    
-    
-
-    
-      
-
-      
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article" route="/PC">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/pc/2024/08/03/another-small-case-build/" itemprop="url">
-              
-                <span itemprop="name">(another) small form factor PC</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2024-08-03T00:00:00+02:00"
-              content="2024-08-03" >
-          08-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-    
-      
-
-      
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article" route="/PC">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/pc/2024/05/02/small-case-build/" itemprop="url">
-              
-                <span itemprop="name">Small form factor PC</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2024-05-02T00:00:00+02:00"
-              content="2024-05-02" >
-          05-02
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-    
-  
-</section>
-
-<nav class="pagination"></nav>
+</div>
 
 
           </div>
@@ -593,6 +648,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -610,10 +676,30 @@
     <div class="sidebar-inner">
 
       
+        
+        
+        
+
+
+
+
+
+
 
       
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/assets/images/portrait.png"
@@ -730,6 +816,34 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#hardware"> <span class="nav-number">1</span> <span class="nav-text">Hardware</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#building-process-step-by-step"> <span class="nav-number">2</span> <span class="nav-text">Building process (step by step)</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#setup--performance-tunning"> <span class="nav-number">3</span> <span class="nav-text">Setup &amp; performance tunning</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#summary"> <span class="nav-number">4</span> <span class="nav-text">Summary</span> </a> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -876,99 +990,9 @@
 
 
 
-  
-    
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
 
-
-
-  <script type="text/javascript" src="/assets/js/src/paginator.js"></script>
-  <script>
-    (function() {
-      // Url route
-      var hash = window.location.hash.substring(1);
-      $(window).on('hashchange', function() {
-        location.reload();
-        $(this).scrollTop(0);
-      });
-
-      if (!hash)
-        hash = "/";
-      $('[route][route!="' + hash + '"]').remove();
-      $('#posts').show();
-
-      // Pagination
-      
-
-      
-
-      
-        if (hash == "/")  {
-          window.location = "/categories/";
-          return;
-        }
-
-        
-        
-
-        var maps = { 'haskell': 4, 'nix': 1, 'Modding': 1, 'PC': 2, };
-        var dirs = hash.split("/");
-        var collection = decodeURIComponent(dirs[1]);
-        dirs.splice(0, 2);
-        hash = "/" + dirs.join("/");
-
-        if (!collection) {
-          window.location = "/categories/";
-          return;
-        }
-
-        $('.collection-title')[0].childNodes[1].childNodes[0].nodeValue = collection;
-        document.title = "Category: " + collection + " | Monad+";
-
-        var sizes = maps[encodeURIComponent(collection)];
-        var base = "#" + "/" + collection;
-      
-
-      var current = 0;
-
-      if (hash != '/') {
-        
-
-        var reg = /(?:\/page(\d+))/;
-        var res = reg.exec(hash);
-
-        if (res && res[1])
-          current = parseInt(res[1]);
-      }
-      else {
-        current = 1;
-      }
-
-      var total = Math.floor(sizes / 10);
-      if (sizes % 10 > 0) {
-        total = total + 1;
-      }
-
-      if (total <= 1) {
-        $('nav.pagination').remove();
-      }
-      else {
-        var content = paginator({
-                          prev_text: '<i class="fa fa-angle-left"></i>',
-                          next_text: '<i class="fa fa-angle-right"></i>',
-                          current: current,
-                          total: total,
-                          base: base,
-                          format: "/page%d",
-                          mid_size: 1,
-                          end_size: 1
-                        });
-          $('nav.pagination').html(content);
-      }
-    })();
-  </script>
-
-
-  
 
   
 
@@ -986,6 +1010,20 @@
       <script id="dsq-count-scr" src="https://monadplus.disqus.com/count.js" async></script>
     
 
+    
+      
+      <script type="text/javascript">
+          var disqus_config = function () {
+              this.page.url = 'http://localhost:4000/pc/2024/08/03/another-small-case-build/';
+              this.page.identifier = '/pc/2024/08/03/another-small-case-build/';
+              this.page.title = '(another) small form factor PC';
+          };
+          var d = document, s = d.createElement('script');
+          s.src = 'https://monadplus.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', '' + +new Date());
+          (d.head || d.body).appendChild(s);
+      </script>
+      
     
 
   
