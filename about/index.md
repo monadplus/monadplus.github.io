@@ -13,11 +13,11 @@ Professional projects:
 
 Open source & personal projects:
 - Haskell
-  - Author: [CPP-lang](https://github.com/monadplus/CPP-lang), [rbst](https://hackage.haskell.org/package/rbst), [floorplanning](https://github.com/monadplus/floorplanning), [parsing-by-example](https://github.com/monadplus/parsing-by-example), and [a twitch game](https://github.com/monadplus/twitch-game)
-  - Contributor: [prometheus-port](https://github.com/on-ramp/prometheus-port)
+  - Author: [CPP-lang](https://github.com/monadplus/CPP-lang), [rbst](https://hackage.haskell.org/package/rbst), [floorplanning](https://github.com/monadplus/floorplanning), [parsing-by-example](https://github.com/monadplus/parsing-by-example), and [twitch game](https://github.com/monadplus/twitch-game)
+  - Contributor: [libsodium-bindings](https://github.com/haskell-cryptography/libsodium-bindings), [prometheus-port](https://github.com/on-ramp/prometheus-port)
   - Talks: [Parallelism and Concurrency in Haskell](https://github.com/monadplus/parconc-notes/tree/main/talk)
 - Rust
-  - Author: [elgato-keylight](https://github.com/monadplus/elgato-keylight), [better-default-derive](https://crates.io/crates/better-default-derive), [toy_atm](https://github.com/monadplus/toy_atm)
+  - Author: [elgato-keylight](https://github.com/monadplus/elgato-keylight), [better-default-derive](https://crates.io/crates/better-default-derive)
   - Contributor:
   - Talks:
 - Scala
@@ -28,9 +28,10 @@ Open source & personal projects:
 - C++: [Box Wrapping Problem](https://github.com/monadplus/box_wrapping_problem)
 - Agda: [Programming Language Foundation in Agda (Solutions)](https://github.com/monadplus/plfa-solutions)
 - Dotfiles:
-  - Arch Linux and NixOS[^1]
-  - [Keyboardio](https://github.com/monadplus/Kaleidoscope)
+  - [Arch Linux](https://github.com/monadplus/dotfiles)[^1] / [NixOS](https://github.com/monadplus/old-nixos-configuration)[^1]
   - [Neovim](https://github.com/monadplus/nvim)
+  - [Keyboardio](https://github.com/monadplus/Kaleidoscope)
+- Miscellaneous: [polybar-tidal](https://github.com/monadplus/polybar-tidal)
 
 Education:
 - BSc in Computer Science at Facultat d'Informàtica de Barcelona ([FIB](https://www.fib.upc.edu/en)).
